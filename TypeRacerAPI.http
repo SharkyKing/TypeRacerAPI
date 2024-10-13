@@ -1,0 +1,6 @@
+@TypeRacerAPI_HostAddress = http://localhost:5044
+
+GET {{TypeRacerAPI_HostAddress}}/typeracerapi/
+Accept: application/json
+
+###
