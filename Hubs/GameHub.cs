@@ -24,7 +24,7 @@ namespace TypeRacerAPI.Hubs
         public async Task CreateGame(string nickName)
         {
             GameService gameService = new GameService(_context);
-            Game game = await gameService.CreateGame("Čia gan įdomus tekstas apie žodžius", nickName, Context.ConnectionId);
+            Game game = await gameService.CreateGame("TESTINIS TEKSTAS SU ŽODŽIAIS", nickName, Context.ConnectionId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
             await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
