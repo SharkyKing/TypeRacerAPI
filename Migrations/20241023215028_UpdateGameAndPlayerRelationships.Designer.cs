@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TypeRacerAPI.Data;
 
@@ -10,9 +11,11 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241023215028_UpdateGameAndPlayerRelationships")]
+    partial class UpdateGameAndPlayerRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,24 +74,7 @@ namespace TypeRacerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameLevel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            GameLevelName = "Beginner"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            GameLevelName = "Normal"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            GameLevelName = "Advanced"
-                        });
+                    b.ToTable("GameLevelBase");
                 });
 
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameTypeBase", b =>
@@ -105,19 +91,7 @@ namespace TypeRacerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            GameTypeName = "TimeAttack"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            GameTypeName = "FluentType"
-                        });
+                    b.ToTable("GameTypeBase");
                 });
 
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerBase", b =>

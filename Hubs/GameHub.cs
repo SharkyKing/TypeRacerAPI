@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using TypeRacerAPI.Data;
-using TypeRacerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Services;
 using System.Timers;
+using TypeRacerAPI.BaseClasses;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -21,10 +21,10 @@ namespace TypeRacerAPI.Hubs
             _gameTimerService = gameTimerService;
         }
 
-        public async Task CreateGame(string nickName)
+        public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel)
         {
             GameService gameService = new GameService(_context);
-            Game game = await gameService.CreateGame("TESTINIS TEKSTAS SU ŽODŽIAIS", nickName, Context.ConnectionId);
+            GameBase game = await gameService.CreateGame(nickName, Context.ConnectionId, activeGameType, activeGameLevel);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
             await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
@@ -33,7 +33,7 @@ namespace TypeRacerAPI.Hubs
         public async Task JoinGame(string gameId,string nickName)
         {
             GameService gameService = new GameService(_context);
-            Game game = await gameService.JoinGame(int.Parse(gameId), nickName, Context.ConnectionId);
+            GameBase game = await gameService.JoinGame(int.Parse(gameId), nickName, Context.ConnectionId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
             await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
@@ -149,7 +149,7 @@ namespace TypeRacerAPI.Hubs
             return $"{minutes:D2}:{remainingSeconds:D2}"; 
         }
 
-        private int CalculateWPM(DateTime endTime, DateTime startTime, Player player)
+        private int CalculateWPM(DateTime endTime, DateTime startTime, PlayerBase player)
         {
             var totalTimeInMinutes = (endTime - startTime).TotalMinutes;
             var wordsTyped = player.CurrentWordIndex; 

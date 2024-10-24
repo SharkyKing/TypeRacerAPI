@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TypeRacerAPI.AbstractFactory.Game;
+using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
-using TypeRacerAPI.Models;
+using TypeRacerAPI.FactoryMethod.Player;
+using static TypeRacerAPI.FactoryMethod.Player.PlayerFactories;
 
 namespace TypeRacerAPI.Services
 {
@@ -13,40 +16,68 @@ namespace TypeRacerAPI.Services
             _context = context;
         }
 
-        public async Task<Game> CreateGame(string words, string nickName, string socketId)
+        public async Task<GameBase> CreateGame(string nickName, string socketId, int activeGameType, int activeGameLevel)
         {
-            var game = new Game { Words = words };
-            game.Players = new List<Player>();
+            IGameFactory gameFactory = new GameFactory();
 
-            var player = new Player
+            GameLevelBase gameLevel = await _context.GameLevel.FirstOrDefaultAsync(gl => gl.Id == activeGameLevel);
+            GameTypeBase gameType = await _context.GameType.FirstOrDefaultAsync(gt => gt.Id == activeGameType);
+
+            GameBase game;
+
+            switch (gameLevel.Id)
             {
-                SocketID = socketId,
-                NickName = nickName,
-                IsPartyLeader = true,
-                Game = game
-            };
+                case 1:
+                    game = gameFactory.CreateBeginnerGame();
+                    break;
+                case 2:
+                    game = gameFactory.CreateNormalGame();
+                    break;
+                case 3:
+                    game = gameFactory.CreateAdvancedGame();
+                    break;
+                default:
+                    throw new NotImplementedException("That game type is not implemented");
+            }
 
-            game.Players.Add(player);
-            await _context.Games.AddAsync(game);
+            game.GameLevel = gameLevel;
+            game.GameType = gameType;
+
+            IPlayerFactory leaderFactory = new PlayerLeaderFactory();
+            PlayerBase leader = leaderFactory.CreatePlayer(game.Id, nickName, socketId);
+
+            await AddGameAsync(game);
+            await AddPlayerAsync(game, leader);
+            return game;
+        }
+
+        public async Task<GameBase> JoinGame(int gameId, string nickName, string socketId)
+        {
+            var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == gameId);
+
+            IPlayerFactory guestFactory = new PlayerGuestFactory();
+            PlayerBase guest = guestFactory.CreatePlayer(game.Id, nickName, socketId);
+
+            game.Players.Add(guest);
             await _context.SaveChangesAsync();
             return game;
         }
 
-        public async Task<Game> JoinGame(int gameId, string nickName, string socketId)
+        public async ValueTask SaveAsync(GameBase game)
         {
-            var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == gameId);
+            await _context.SaveChangesAsync();
+        }
 
-            var player = new Player
-            {
-                SocketID = socketId,
-                NickName = nickName,
-                IsPartyLeader = false,
-                Game = game
-            };
+        public async ValueTask AddGameAsync(GameBase game)
+        {
+            await _context.Games.AddAsync(game);
+            await _context.SaveChangesAsync();
+        }
 
+        public async ValueTask AddPlayerAsync(GameBase game, PlayerBase player)
+        {
             game.Players.Add(player);
             await _context.SaveChangesAsync();
-            return game;
         }
     }
 }

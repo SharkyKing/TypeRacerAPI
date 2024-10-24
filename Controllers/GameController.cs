@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TypeRacerAPI.Models;
+using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
-using TypeRacerAPI.Services;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -19,7 +19,7 @@ namespace TypeRacerAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
+        public async Task<ActionResult<GameBase>> GetGame(int id)
         {
             var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == id);
             if (game == null)
@@ -30,21 +30,37 @@ namespace TypeRacerAPI.Controllers
             return game;
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<Game>> CreateGame([FromBody] string nickName)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GameBase>>> GetAllGames()
         {
-            GameService gameService = new GameService(_context);
-            Game game = await gameService.CreateGame("TEST TEST", nickName, "TempSocketID" + (new Random()).Next(10000, 99999));
-
-            return CreatedAtAction(nameof(GetGame), new { id = game.Id }, game);
+            var games = await _context.Games.Include(g => g.Players).ToListAsync();
+            return Ok(games);
         }
-        [HttpPost("join")]
-        public async Task<ActionResult<Game>> JoinGame(int gameId, string nickName)
-        {
-            GameService gameService = new GameService(_context);
-            Game game = await gameService.JoinGame(gameId, nickName, "TempSocketID" + (new Random()).Next(10000, 99999));
 
-            return CreatedAtAction(nameof(GetGame), new { id = game.Id }, game);
+        [HttpGet("{id}/players")]
+        public async Task<ActionResult<IEnumerable<PlayerBase>>> GetPlayersInGame(int id)
+        {
+            var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(game.Players);
+        }
+
+        [HttpGet("levels")]
+        public async Task<ActionResult<IEnumerable<GameTypeBase>>> GetGameLevels()
+        {
+            var gameLevels = await _context.GameLevel.ToListAsync();
+            return Ok(gameLevels);
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGameTypes()
+        {
+            var gameTypes = await _context.GameType.ToListAsync();
+            return Ok(gameTypes);
         }
     }
 }
