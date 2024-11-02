@@ -17,7 +17,7 @@ namespace TypeRacerAPI.Services
         public List<GameTypeBase> GameTypes { get;private set; }
         public List<GameLevelBase> GameLevels { get;private set; }
         public List<PlayerPowerBase> Powers { get;private set; }
-        public GameService(AppDbContext context)
+        private GameService(AppDbContext context)
         {
             _context = context;
 
