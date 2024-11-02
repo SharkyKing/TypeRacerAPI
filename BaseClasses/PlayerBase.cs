@@ -13,5 +13,7 @@ namespace TypeRacerAPI.BaseClasses
         public int GameId { get; set; }
         [JsonIgnore]
         public GameBase Game { get; set; }
+        [JsonIgnore]
+        public ICollection<PlayerPowerUse> PlayerPowerUses { get; set; }
     }
 }

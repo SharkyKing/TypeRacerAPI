@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TypeRacerAPI.BaseClasses;
 
 namespace TypeRacerAPI.Data
@@ -9,7 +10,8 @@ namespace TypeRacerAPI.Data
         public DbSet<PlayerBase> Players { get; set; }
         public DbSet<GameLevelBase> GameLevel { get; set; }
         public DbSet<GameTypeBase> GameType { get; set; }
-
+        public DbSet<PlayerPowerBase> PlayerPower { get; set; }
+        public DbSet<PlayerPowerUse> PlayerPowerUses { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,6 +31,17 @@ namespace TypeRacerAPI.Data
                 .WithMany(gt => gt.Games)
                 .HasForeignKey(g => g.GameTypeId);
 
+            modelBuilder.Entity<PlayerPowerUse>()
+                .HasOne(p => p.Player)
+                .WithMany(player => player.PlayerPowerUses)
+                .HasForeignKey(p => p.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PlayerPowerUse>()
+                .HasOne(pp => pp.PlayerPower)
+                .WithMany(ppBase => ppBase.PlayerPowerUses)
+                .HasForeignKey(pp => pp.PlayerPowerId);
+
             modelBuilder.Entity<GameLevelBase>().HasData(
                 new GameLevelBase { Id = 1, GameLevelName = "Beginner" },
                 new GameLevelBase { Id = 2, GameLevelName = "Normal" },
@@ -40,7 +53,18 @@ namespace TypeRacerAPI.Data
                 new GameTypeBase { Id = 2, GameTypeName = "FluentType" }
             );
 
+            modelBuilder.Entity<PlayerPowerBase>().HasData(
+                new PlayerPowerBase { Id = 1, PlayerPowerName = "Freeze", PlayerPowerKey = "F", ImagePath = "/images/freeze.png" },
+                new PlayerPowerBase { Id = 2, PlayerPowerName = "Rewind", PlayerPowerKey = "R", ImagePath = "/images/rewind.png" },
+                new PlayerPowerBase { Id = 3, PlayerPowerName = "Invisible", PlayerPowerKey = "I", ImagePath = "/images/invisible.png" }
+            );
+
             base.OnModelCreating(modelBuilder);
+        }
+
+        public void InitializeDatabase()
+        {
+
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using TypeRacerAPI.BaseClasses;
 
-namespace TypeRacerAPI.FactoryMethod.Player
+namespace TypeRacerAPI.ArchitectureTemplates.FactoryMethod.Player
 {
     public class PlayerFactories
     {

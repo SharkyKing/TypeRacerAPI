@@ -19,19 +19,19 @@ namespace TypeRacerAPI.Services
         {
             texts = ReadJsonFile(filePath);
         }
-        public static string GetText(string level)
+        public static string GetText(LevelText level)
         {
             List<string> selectedList;
 
-            switch (level.ToLower())
+            switch (level)
             {
-                case "begginner":
+                case LevelText.Beginner:
                     selectedList = texts.Begginner;
                     break;
-                case "normal":
+                case LevelText.Normal:
                     selectedList = texts.Normal;
                     break;
-                case "advanced":
+                case LevelText.Advanced:
                     selectedList = texts.Advanced;
                     break;
                 default:
@@ -59,6 +59,11 @@ namespace TypeRacerAPI.Services
                 Console.WriteLine($"Error reading the JSON file: {ex.Message}");
                 return null;
             }
+        }
+
+        public enum LevelText
+        {
+            Beginner, Normal, Advanced
         }
     }
 }

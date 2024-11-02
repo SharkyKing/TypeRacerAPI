@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using TypeRacerAPI.BaseClasses;
 
-namespace TypeRacerAPI.FactoryMethod.Player
+namespace TypeRacerAPI.ArchitectureTemplates.FactoryMethod.Player
 {
     public class PlayerGuest : PlayerBase
     {
@@ -10,7 +10,7 @@ namespace TypeRacerAPI.FactoryMethod.Player
             GameId = gameId;
             NickName = nickName;
             SocketID = socketId;
-            IsPartyLeader = false; 
+            IsPartyLeader = false;
         }
     }
 

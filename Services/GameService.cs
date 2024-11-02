@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TypeRacerAPI.AbstractFactory.Game;
+using TypeRacerAPI.ArchitectureTemplates.AbstractFactory.Game;
+using TypeRacerAPI.ArchitectureTemplates.FactoryMethod.Player;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
-using TypeRacerAPI.FactoryMethod.Player;
-using static TypeRacerAPI.FactoryMethod.Player.PlayerFactories;
+using static TypeRacerAPI.ArchitectureTemplates.FactoryMethod.Player.PlayerFactories;
 
 namespace TypeRacerAPI.Services
 {
@@ -77,6 +77,23 @@ namespace TypeRacerAPI.Services
         public async ValueTask AddPlayerAsync(GameBase game, PlayerBase player)
         {
             game.Players.Add(player);
+
+            await _context.SaveChangesAsync();
+
+            var powers = await _context.PlayerPower.ToListAsync();
+
+            foreach (var power in powers)
+            {
+                PlayerPowerUse playerPowerUse = new PlayerPowerUse
+                {
+                    PlayerId = player.Id,
+                    PlayerPowerId = power.Id,
+                    IsUsed = false 
+                };
+
+                await _context.PlayerPowerUses.AddAsync(playerPowerUse);
+            }
+
             await _context.SaveChangesAsync();
         }
     }

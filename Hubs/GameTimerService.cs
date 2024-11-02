@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.Hubs;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
+using TypeRacerAPI.BaseClasses;
 
 public class GameTimerService : IHostedService
 {
@@ -45,14 +47,23 @@ public class GameTimerService : IHostedService
             game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
             await context.SaveChangesAsync();
 
-            int time = 3 * 60; // 3 minutes countdown
+            int time = 2 * 60; // 3 minutes countdown
 
             while (time >= 0)
             {
-                await hubContext.Clients.Group(gameId.ToString()).SendAsync("timerClient", new { countDown = time, msg = "" });
+                int minutes = time / 60;
+                int seconds = time - minutes * 60;
+
+                string timeString = (minutes > 9 ? minutes.ToString() : "0" + minutes.ToString()) + ":" +
+                    (seconds > 9 ? seconds.ToString() : "0" + seconds.ToString());
+
+                await hubContext.Clients.Group(gameId.ToString()).SendAsync("timerClient", new { countDown = timeString, msg = "Time left" });
                 await Task.Delay(1000); // Wait for 1 second
                 time--;
             }
+
+            PlayerBase player = new PlayerBase();
+            await hubContext.Clients.Group(gameId.ToString()).SendAsync("done", new { game, playerWon = player });
         }
     }
 }

@@ -11,8 +11,8 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241024184233_NewTypesAsGlobalsSwitchedBases")]
-    partial class NewTypesAsGlobalsSwitchedBases
+    [Migration("20241102130903_PlayerPowerDeleteRelation")]
+    partial class PlayerPowerDeleteRelation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,92 @@ namespace TypeRacerAPI.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerBase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CooldownTime")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOneTimeUse")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PlayerPowerKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlayerPowerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlayerPower");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CooldownTime = 0,
+                            ImagePath = "/images/freeze.png",
+                            IsOneTimeUse = false,
+                            PlayerPowerKey = "F",
+                            PlayerPowerName = "Freeze"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CooldownTime = 0,
+                            ImagePath = "/images/rewind.png",
+                            IsOneTimeUse = false,
+                            PlayerPowerKey = "R",
+                            PlayerPowerName = "Rewind"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CooldownTime = 0,
+                            ImagePath = "/images/invisible.png",
+                            IsOneTimeUse = false,
+                            PlayerPowerKey = "I",
+                            PlayerPowerName = "Invisible"
+                        });
+                });
+
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerUse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerPowerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("PlayerPowerId");
+
+                    b.ToTable("PlayerPowerUses");
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameBase", b =>
                 {
                     b.HasOne("TypeRacerAPI.BaseClasses.GameLevelBase", "GameLevel")
@@ -188,6 +274,25 @@ namespace TypeRacerAPI.Migrations
                     b.Navigation("Game");
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerUse", b =>
+                {
+                    b.HasOne("TypeRacerAPI.BaseClasses.PlayerBase", "Player")
+                        .WithMany("PlayerPowerUses")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TypeRacerAPI.BaseClasses.PlayerPowerBase", "PlayerPower")
+                        .WithMany("PlayerPowerUses")
+                        .HasForeignKey("PlayerPowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+
+                    b.Navigation("PlayerPower");
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameBase", b =>
                 {
                     b.Navigation("Players");
@@ -201,6 +306,16 @@ namespace TypeRacerAPI.Migrations
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameTypeBase", b =>
                 {
                     b.Navigation("Games");
+                });
+
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerBase", b =>
+                {
+                    b.Navigation("PlayerPowerUses");
+                });
+
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerBase", b =>
+                {
+                    b.Navigation("PlayerPowerUses");
                 });
 #pragma warning restore 612, 618
         }

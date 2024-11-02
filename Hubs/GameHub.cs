@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Services;
 using System.Timers;
 using TypeRacerAPI.BaseClasses;
+using TypeRacerAPI.ArchitectureTemplates.PowerTemplate;
+using TypeRacerAPI.Enums;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -43,7 +45,7 @@ namespace TypeRacerAPI.Hubs
         {
             try
             {
-                int countDown = 5;
+                int countDown = 3;
 
                 var game = await _context.Games
                     .Include(g => g.Players)
@@ -110,6 +112,16 @@ namespace TypeRacerAPI.Hubs
 
                     if (player != null)
                     {
+                        PowerController powerController = new PowerController();
+
+                        bool IsPower = await powerController.IdentifyPower(userInput, _context);
+
+                        if (IsPower)
+                        {
+                            await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
+                            return;
+                        }
+
                         var words = game.Words.Split(" ");
                         string word = words[player.CurrentWordIndex];
 

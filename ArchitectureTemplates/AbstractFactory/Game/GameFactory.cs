@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
-
-namespace TypeRacerAPI.AbstractFactory.Game
+namespace TypeRacerAPI.ArchitectureTemplates.AbstractFactory.Game
 {
     public class GameFactory : IGameFactory
     {

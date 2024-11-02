@@ -62,5 +62,12 @@ namespace TypeRacerAPI.Controllers
             var gameTypes = await _context.GameType.ToListAsync();
             return Ok(gameTypes);
         }
+
+        [HttpGet("powers")]
+        public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGamePowers()
+        {
+            var playerPowers = await _context.PlayerPower.ToListAsync();
+            return Ok(playerPowers);
+        }
     }
 }

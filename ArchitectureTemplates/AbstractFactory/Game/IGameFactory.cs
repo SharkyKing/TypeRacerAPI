@@ -1,6 +1,6 @@
 ﻿using TypeRacerAPI.BaseClasses;
 
-namespace TypeRacerAPI.AbstractFactory.Game
+namespace TypeRacerAPI.ArchitectureTemplates.AbstractFactory.Game
 {
     public interface IGameFactory
     {

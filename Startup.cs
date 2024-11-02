@@ -49,6 +49,15 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        using (var scope = app.ApplicationServices.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            context.Database.Migrate();
+
+            context.InitializeDatabase();
+        }
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
