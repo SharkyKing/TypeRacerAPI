@@ -4,6 +4,7 @@ using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TypeRacerAPI.Services;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -52,21 +53,22 @@ namespace TypeRacerAPI.Controllers
         [HttpGet("levels")]
         public async Task<ActionResult<IEnumerable<GameTypeBase>>> GetGameLevels()
         {
-            var gameLevels = await _context.GameLevel.ToListAsync();
+            var gameLevels = GameService.GetInstance(_context).GameLevels;
             return Ok(gameLevels);
         }
 
         [HttpGet("types")]
         public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGameTypes()
         {
-            var gameTypes = await _context.GameType.ToListAsync();
+            
+            var gameTypes = GameService.GetInstance(_context).GameTypes;
             return Ok(gameTypes);
         }
 
         [HttpGet("powers")]
         public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGamePowers()
         {
-            var playerPowers = await _context.PlayerPower.ToListAsync();
+            var playerPowers = GameService.GetInstance(_context).Powers;
             return Ok(playerPowers);
         }
     }

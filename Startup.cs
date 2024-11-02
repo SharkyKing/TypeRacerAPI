@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.Hubs;
 using System.Text.Json.Serialization;
+using TypeRacerAPI.Services;
 
 public class Startup
 {
@@ -56,6 +57,8 @@ public class Startup
             context.Database.Migrate();
 
             context.InitializeDatabase();
+
+            GameService gameService = GameService.GetInstance(context);
         }
 
         if (env.IsDevelopment())

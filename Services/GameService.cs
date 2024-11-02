@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Security.AccessControl;
 using TypeRacerAPI.ArchitectureTemplates.AbstractFactory.Game;
 using TypeRacerAPI.ArchitectureTemplates.FactoryMethod.Player;
 using TypeRacerAPI.BaseClasses;
@@ -10,18 +12,41 @@ namespace TypeRacerAPI.Services
     public class GameService
     {
         private readonly AppDbContext _context;
-
+        private static GameService _instance;
+        private static readonly object _lock = new object();
+        public List<GameTypeBase> GameTypes { get;private set; }
+        public List<GameLevelBase> GameLevels { get;private set; }
+        public List<PlayerPowerBase> Powers { get;private set; }
         public GameService(AppDbContext context)
         {
             _context = context;
+
+            GameTypes = _context.GameType.ToList();
+            GameLevels = _context.GameLevel.ToList();
+            Powers = _context.PlayerPower.ToList();
+        }
+
+        public static GameService GetInstance(AppDbContext context)
+        {
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new GameService(context);
+                    }
+                }
+            }
+            return _instance;
         }
 
         public async Task<GameBase> CreateGame(string nickName, string socketId, int activeGameType, int activeGameLevel)
         {
             IGameFactory gameFactory = new GameFactory();
 
-            GameLevelBase gameLevel = await _context.GameLevel.FirstOrDefaultAsync(gl => gl.Id == activeGameLevel);
-            GameTypeBase gameType = await _context.GameType.FirstOrDefaultAsync(gt => gt.Id == activeGameType);
+            GameLevelBase gameLevel = GameLevels.Where(gl => gl.Id == activeGameLevel).FirstOrDefault();
+            GameTypeBase gameType = GameTypes.Where(gt => gt.Id == activeGameType).FirstOrDefault();
 
             GameBase game;
 

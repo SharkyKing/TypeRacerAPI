@@ -25,7 +25,7 @@ namespace TypeRacerAPI.Hubs
 
         public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel)
         {
-            GameService gameService = new GameService(_context);
+            GameService gameService = GameService.GetInstance(_context);
             GameBase game = await gameService.CreateGame(nickName, Context.ConnectionId, activeGameType, activeGameLevel);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
@@ -34,7 +34,7 @@ namespace TypeRacerAPI.Hubs
 
         public async Task JoinGame(string gameId,string nickName)
         {
-            GameService gameService = new GameService(_context);
+            GameService gameService = GameService.GetInstance(_context);
             GameBase game = await gameService.JoinGame(int.Parse(gameId), nickName, Context.ConnectionId);
 
             await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
