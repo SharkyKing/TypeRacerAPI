@@ -9,6 +9,9 @@ using TypeRacerAPI.Data;
 using TypeRacerAPI.Hubs;
 using System.Text.Json.Serialization;
 using TypeRacerAPI.Services;
+using TypeRacerAPI.DesignPatterns.Observer;
+using TypeRacerAPI.DesignPatterns.Singleton.GameService;
+using Microsoft.AspNetCore.SignalR;
 
 public class Startup
 {
@@ -18,34 +21,47 @@ public class Startup
     {
         Configuration = configuration;
     }
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("CorsPolicy", builder =>
+            options.AddPolicy("AllowSpecificOrigin",
+            builder =>
             {
-                builder.WithOrigins("http://localhost:3000")
-                       .AllowAnyMethod()
-                       .AllowAnyHeader()
-                       .AllowCredentials();
+                builder
+                    .WithOrigins(
+                        "http://192.168.56.1:3000",     // Your frontend URL
+                        "http://localhost:3000"          // Also allow localhost
+                    )
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()                  // Required for SignalR
+                    .SetIsOriginAllowedToAllowWildcardSubdomains(); // Allow subdomains if needed
             });
         });
+
         services.AddControllers()
-        .AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-        });
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
 
         services.AddSignalR(e => {
             e.MaximumReceiveMessageSize = 102400000;
             e.EnableDetailedErrors = true;
         });
 
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "TypeRacerAPI", Version = "v1" });
+        });
+
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<GameTimerService>();
+        services.AddScoped<GameObserver>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,29 +69,27 @@ public class Startup
         using (var scope = app.ApplicationServices.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
             context.Database.Migrate();
-
             context.InitializeDatabase();
-
-            GameService gameService = GameService.GetInstance(context);
         }
 
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TypeRacerAPI v1");
+                c.RoutePrefix = string.Empty;
+            });
         }
 
         app.UseHttpsRedirection();
-        app.UseCors("CorsPolicy");
+
+        app.UseCors("AllowSpecificOrigin");
+
         app.UseRouting();
         app.UseAuthorization();
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TypeRacerAPI");
-            c.RoutePrefix = string.Empty;  
-        });
 
         app.UseEndpoints(endpoints =>
         {

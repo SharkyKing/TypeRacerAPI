@@ -8,62 +8,98 @@ using TypeRacerAPI.Hubs;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 using TypeRacerAPI.BaseClasses;
+using TypeRacerAPI.Services;
+using TypeRacerAPI.DesignPatterns.Singleton.GameService;
+using TypeRacerAPI.DesignPatterns.Observer;
 
-public class GameTimerService : IHostedService
+public class GameTimerService
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly AppDbContext _appDbContext;
+    private readonly IHubContext<GameHub> _hubContext;
+    private readonly ObserverController _observerController;
+    private readonly GameService _gameService;
 
-    public GameTimerService(IServiceScopeFactory scopeFactory)
+    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, GameService gameService, ObserverController observerController)
     {
-        _scopeFactory = scopeFactory;
+        _appDbContext = context;
+        _hubContext = hubContext;
+        _observerController = observerController;
+        _gameService = gameService;  // Injected GameService instance
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartGameTimer(GameClass game)
     {
-        // You can implement startup logic here if needed
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        // Clean-up logic can be implemented here if needed
-    }
-
-    public async Task StartGameTimer(int gameId, IHubContext<GameHub> hubContext)
-    {
-        using (var scope = _scopeFactory.CreateScope())
+        if (game != null)
         {
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-            var game = await context.Games
-                .Include(g => g.Players)
-                .FirstOrDefaultAsync(g => g.Id == gameId);
-
-            if (game == null)
-            {
-                Console.WriteLine($"Game with ID {gameId} not found.");
-                return;
-            }
-
             game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
-            await context.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync();
 
-            int time = 2 * 60; // 3 minutes countdown
+            int time = ConstantService.GameCountdownSeconds;
 
             while (time >= 0)
             {
-                int minutes = time / 60;
-                int seconds = time - minutes * 60;
+                string timeString = LogicHelper.CalculateTime(time);
 
-                string timeString = (minutes > 9 ? minutes.ToString() : "0" + minutes.ToString()) + ":" +
-                    (seconds > 9 ? seconds.ToString() : "0" + seconds.ToString());
-
-                await hubContext.Clients.Group(gameId.ToString()).SendAsync("timerClient", new { countDown = timeString, msg = "Time left" });
-                await Task.Delay(1000); // Wait for 1 second
+                await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("timerClient", new { countDown = timeString, msg = "Time left" });
+                await Task.Delay(1000); 
                 time--;
             }
 
-            PlayerBase player = new PlayerBase();
-            await hubContext.Clients.Group(gameId.ToString()).SendAsync("done", new { game, playerWon = player });
+            PlayerClass player = new PlayerClass();
+            await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("done", new { game, playerWon = player });
+        }
+    }
+
+    public async Task PowerCoolDownTimer(int playerId, string connectionId)
+    {
+        bool allTimersFinished = false;
+
+        var playerPowers = _appDbContext.PlayerPowerUses.Where(ppu => ppu.PlayerId == playerId).ToList();
+
+        Dictionary<PlayerPowerUseClass, int> playerPowerUseCoolDownLeft = new Dictionary<PlayerPowerUseClass, int>();
+
+        foreach (PlayerPowerUseClass usePower in playerPowers)
+        {
+            var powerBase = _gameService.Powers.Where(ppb => ppb.Id == usePower.PlayerPowerId).FirstOrDefault();
+            int time = powerBase.CooldownTime;
+
+            if (!playerPowerUseCoolDownLeft.ContainsKey(usePower))
+            {
+                playerPowerUseCoolDownLeft.Add(usePower, time);
+                usePower.IsOnCooldown = true;
+            }
+        }
+
+        await _appDbContext.SaveChangesAsync();
+
+        while (!allTimersFinished)
+        {
+            bool stillLeftTimers = false;
+            foreach(KeyValuePair<PlayerPowerUseClass, int> pair in playerPowerUseCoolDownLeft)
+            {
+                if(pair.Value >= 0)
+                {
+                    stillLeftTimers = true;
+                    int timeCurrent = playerPowerUseCoolDownLeft[pair.Key];
+
+                    await _hubContext
+                        .Clients
+                        .Client(connectionId)
+                        .SendAsync("cooldowntimer",
+                            new { powerUseId = pair.Key.Id, time = timeCurrent }
+                        );
+
+                    playerPowerUseCoolDownLeft[pair.Key] = pair.Value - 1;
+                }
+                else
+                {
+                    pair.Key.IsOnCooldown = false;
+                    await _appDbContext.SaveChangesAsync();
+                }
+            }
+
+            await Task.Delay(1000);
+            allTimersFinished = !stillLeftTimers;
         }
     }
 }

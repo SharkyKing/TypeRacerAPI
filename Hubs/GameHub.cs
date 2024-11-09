@@ -6,7 +6,10 @@ using TypeRacerAPI.Services;
 using System.Timers;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.ArchitectureTemplates.PowerTemplate;
-using TypeRacerAPI.Enums;
+using TypeRacerAPI.DesignPatterns.Singleton.GameService;
+using TypeRacerAPI.DesignPatterns.Facade.Interface;
+using TypeRacerAPI.DesignPatterns.Facade;
+using TypeRacerAPI.DesignPatterns.Observer;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -15,96 +18,77 @@ namespace TypeRacerAPI.Hubs
         private readonly AppDbContext _context;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameTimerService _gameTimerService;
+        private readonly GameService _gameService;
+        private readonly ObserverController _observerController;
+        private readonly IServiceProvider _serviceProvider;
 
-        public GameHub(AppDbContext context, IHubContext<GameHub> hubContext, GameTimerService gameTimerService)
+        public GameHub(
+            AppDbContext context,
+            IHubContext<GameHub> hubContext,
+            GameTimerService gameTimerService,
+            GameService gameService,
+            ObserverController observerController,
+            IServiceProvider serviceProvider)
         {
             _context = context;
             _hubContext = hubContext;
             _gameTimerService = gameTimerService;
+            _gameService = gameService;
+            _observerController = observerController;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel)
         {
-            GameService gameService = GameService.GetInstance(_context);
-            GameBase game = await gameService.CreateGame(nickName, Context.ConnectionId, activeGameType, activeGameLevel);
+            IGameFacade gameCreateFacade = new GameCreateFacade(_context, _hubContext, _observerController, _gameService);
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
-            await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
+            GameClass game = await gameCreateFacade.Execute(nickName, Context.ConnectionId, activeGameType, activeGameLevel, 0);
+
+            if (game != null)
+            {
+                await AddMeToGroup(game.Id.ToString());
+
+                GameObserver gameObserver = new GameObserver(_hubContext, _serviceProvider);
+                gameObserver.SetGameId(game.Id);
+
+                _observerController.Attach(gameObserver);
+                _observerController.Notify();
+            }
         }
 
-        public async Task JoinGame(string gameId,string nickName)
+        public async Task JoinGame(string gameId, string nickName)
         {
-            GameService gameService = GameService.GetInstance(_context);
-            GameBase game = await gameService.JoinGame(int.Parse(gameId), nickName, Context.ConnectionId);
+            IGameFacade gameJoinFacade = new GameJoinFacade(_context, _hubContext, _observerController, _gameService);
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
-            await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
+            GameClass game = await gameJoinFacade.Execute(nickName, Context.ConnectionId, 0, 0, 0);
+
+            if (game != null)
+            {
+                await AddMeToGroup(game.Id.ToString());
+                _observerController.Notify();
+            }
         }
 
         public async Task StartTimer(int playerId, int gameId)
         {
-            try
-            {
-                int countDown = 3;
+            var game = await _gameService.GetGame(gameId);
 
-                var game = await _context.Games
-                    .Include(g => g.Players)
-                    .FirstOrDefaultAsync(g => g.Id == gameId);
-
-                if (game == null)
-                {
-                    return;
-                }
-
-                var player = game.Players.FirstOrDefault(p => p.Id == playerId);
-                if (player == null)
-                {
-                    return;
-                }
-
-                if (player.IsPartyLeader)
-                {
-                    await CountdownTimer(gameId, countDown);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error handling timer event: " + ex.Message);
-            }
-        }
-
-        private async Task CountdownTimer(int gameId, int countDown)
-        {
-            while (countDown >= 0)
-            {
-                await Clients.Group(gameId.ToString()).SendAsync("timerClient", new { countDown, msg = "Starting game" });
-                await Task.Delay(1000); 
-                countDown--;
-            }
-
-            var game = await _context.Games.FindAsync(gameId);
             if (game != null)
             {
-                game.IsOpen = false;
-                await _context.SaveChangesAsync();
-
-                await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
-                await StartGameClock(gameId);
+                var player = await _gameService.GetPlayer(playerId);
+                if (player != null && player.IsPartyLeader)
+                {
+                    await _gameService.CountdownTimer(game, _gameTimerService, _hubContext, _observerController);
+                }
             }
         }
 
-        private async Task StartGameClock(int gameId)
-        {
-            _gameTimerService.StartGameTimer(gameId, _hubContext);
-        }
-
+        /* Uncomment and update these methods as needed
         public async Task UserInput(string userInput, int gameId)
         {
             try
             {
-                var game = await _context.Games
-                    .Include(g => g.Players)
-                    .FirstOrDefaultAsync(g => g.Id == gameId);
+                var game = await _gameService.GetGame(gameId);
 
                 if (game != null && !game.IsOpen && !game.IsOver)
                 {
@@ -114,37 +98,15 @@ namespace TypeRacerAPI.Hubs
                     {
                         PowerController powerController = new PowerController();
 
-                        bool IsPower = await powerController.IdentifyPower(userInput, _context);
+                        bool powerUsed = await powerController.IdentifyPower(userInput, player, game.Id, _context);
 
-                        if (IsPower)
+                        if (powerUsed)
                         {
-                            await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
+                            _observerController.Notify();
                             return;
                         }
 
-                        var words = game.Words.Split(" ");
-                        string word = words[player.CurrentWordIndex];
-
-                        if (word == userInput)
-                        {
-                            player.CurrentWordIndex++;
-
-                            if (player.CurrentWordIndex < words.Length)
-                            {
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
-                            }
-                            else
-                            {
-                                DateTime endTime = DateTime.UtcNow; 
-                                DateTime startTime = new DateTime(game.StartTime * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
-                                player.WPM = CalculateWPM(endTime, startTime, player);
-
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
-                                await Clients.Group(gameId.ToString()).SendAsync("done", new { game, playerWon = player });
-                            }
-                        }
+                        // Rest of the game logic...
                     }
                 }
             }
@@ -154,22 +116,21 @@ namespace TypeRacerAPI.Hubs
             }
         }
 
-        private string CalculateTime(int seconds)
+        public async Task StartPowerCooldown(int id)
         {
-            var minutes = seconds / 60;
-            var remainingSeconds = seconds % 60;
-            return $"{minutes:D2}:{remainingSeconds:D2}"; 
-        }
-
-        private int CalculateWPM(DateTime endTime, DateTime startTime, PlayerBase player)
-        {
-            var totalTimeInMinutes = (endTime - startTime).TotalMinutes;
-            var wordsTyped = player.CurrentWordIndex; 
-            return (int)(wordsTyped / totalTimeInMinutes);
+            _ = _gameTimerService.PowerCoolDownTimer(id, _hubContext, Context.ConnectionId);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            var playerDisconnecting = await _gameService.GetPlayerBySocketId(Context.ConnectionId);
+
+            if (playerDisconnecting != null)
+            {
+                await _gameService.RemovePlayer(playerDisconnecting);
+                _observerController.Notify();
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -181,6 +142,12 @@ namespace TypeRacerAPI.Hubs
             await Clients.Caller.SendAsync("ReceiveConnectionId", connectionId);
 
             await base.OnConnectedAsync();
+        }
+        */
+
+        public async ValueTask AddMeToGroup(string groupId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
         }
     }
 }

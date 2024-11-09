@@ -5,6 +5,11 @@ using TypeRacerAPI.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TypeRacerAPI.Services;
+using TypeRacerAPI.Controllers.ControllerHelperClasses;
+using TypeRacerAPI.DesignPatterns.Singleton.GameService;
+using Microsoft.AspNetCore.SignalR;
+using TypeRacerAPI.Hubs;
+using TypeRacerAPI.DesignPatterns.Observer;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -12,63 +17,74 @@ namespace TypeRacerAPI.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
+        private readonly GameService _gameService;
+        private readonly IHubContext<GameHub> _hubContext;
         private readonly AppDbContext _context;
 
-        public GameController(AppDbContext context)
+        public GameController(
+            GameService gameService,
+            IHubContext<GameHub> hubContext,
+            AppDbContext context)
         {
+            _gameService = gameService;
+            _hubContext = hubContext;
             _context = context;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GameBase>> GetGame(int id)
+        public async Task<ActionResult<GameClass>> GetGame(int id)
         {
-            var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _gameService.GetGame(id);
             if (game == null)
             {
                 return NotFound();
             }
-
             return game;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameBase>>> GetAllGames()
+        public async Task<ActionResult<IEnumerable<GameClass>>> GetAllGames()
         {
-            var games = await _context.Games.Include(g => g.Players).ToListAsync();
+            // Still using context directly for this query as it's not in GameService
+            var games = await _context.Games
+                .Include(g => g.Players)
+                .ToListAsync();
             return Ok(games);
         }
 
         [HttpGet("{id}/players")]
-        public async Task<ActionResult<IEnumerable<PlayerBase>>> GetPlayersInGame(int id)
+        public async Task<ActionResult<IEnumerable<PlayerClass>>> GetPlayersInGame(int id)
         {
-            var game = await _context.Games.Include(g => g.Players).FirstOrDefaultAsync(g => g.Id == id);
+            var game = await _gameService.GetGame(id);
             if (game == null)
             {
                 return NotFound();
             }
-
             return Ok(game.Players);
         }
 
         [HttpGet("levels")]
-        public async Task<ActionResult<IEnumerable<GameTypeBase>>> GetGameLevels()
+        public ActionResult<IEnumerable<GameTypeClass>> GetGameLevels()
         {
-            var gameLevels = GameService.GetInstance(_context).GameLevels;
-            return Ok(gameLevels);
+            return Ok(_gameService.GameLevels);
         }
 
         [HttpGet("types")]
-        public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGameTypes()
+        public ActionResult<IEnumerable<GameLevelClass>> GetGameTypes()
         {
-            
-            var gameTypes = GameService.GetInstance(_context).GameTypes;
-            return Ok(gameTypes);
+            return Ok(_gameService.GameTypes);
         }
 
         [HttpGet("powers")]
-        public async Task<ActionResult<IEnumerable<GameLevelBase>>> GetGamePowers()
+        public ActionResult<IEnumerable<PlayerPowerClass>> GetGamePowers()
         {
-            var playerPowers = GameService.GetInstance(_context).Powers;
+            return Ok(_gameService.Powers);
+        }
+
+        [HttpGet("player/{id}/powers")]
+        public async Task<ActionResult<IEnumerable<PlayerPowerUseRelation>>> GetPlayerPowers(int id)
+        {
+            var playerPowers = await _gameService.GetPlayerPowers(id);
             return Ok(playerPowers);
         }
     }
