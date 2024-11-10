@@ -10,6 +10,7 @@ using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.DesignPatterns.Observer;
+using TypeRacerAPI.DesignPatterns.Decorator;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -80,12 +81,36 @@ namespace TypeRacerAPI.Controllers
             return Ok(_gameService.Powers);
         }
         [HttpGet("wordStyles")]
-        public ActionResult<IEnumerable<PlayerPowerClass>> GetWordStyles()
-        {
-            return Ok(_gameService.WordStyles);
-        }
+		public ActionResult<IEnumerable<string>> GetWordStyles()
+		{
+			var decoratedWords = new List<string>();
 
-        [HttpGet("player/{id}/powers")]
+			foreach (var wordStyle in _gameService.WordStyles)
+			{
+				var word = new WordStyleDecorator(wordStyle.StyleName);
+
+				if (!string.IsNullOrEmpty(wordStyle.fontFamily))
+				{
+					word = new FontFamilyDecorator(word, wordStyle.fontFamily);
+				}
+
+				if (!string.IsNullOrEmpty(wordStyle.fontWeight))
+				{
+					word = new FontWeightDecorator(word, wordStyle.fontWeight);
+				}
+
+				if (!string.IsNullOrEmpty(wordStyle.fontStyle))
+				{
+					word = new FontStyleDecorator(word, wordStyle.fontStyle);
+				}
+
+				decoratedWords.Add(word.GetStyledText());
+			}
+
+			return Ok(decoratedWords);
+		}
+
+		[HttpGet("player/{id}/powers")]
         public async Task<ActionResult<IEnumerable<PlayerPowerUseRelation>>> GetPlayerPowers(int id)
         {
             var playerPowers = await _gameService.GetPlayerPowers(id);
