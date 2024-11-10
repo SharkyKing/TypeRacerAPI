@@ -18,6 +18,7 @@ namespace TypeRacerAPI.Data
         public DbSet<WordsClass> Words { get; set; }
         public DbSet<GameLogClass> GameLog { get; set; }
         public DbSet<LogTypeClass> LogType { get; set; }
+        public DbSet<WordsStyleClass> WordsStyle { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +27,11 @@ namespace TypeRacerAPI.Data
                 .HasMany(g => g.Players)
                 .WithOne(p => p.Game)
                 .HasForeignKey(p => p.GameId);
+
+            modelBuilder.Entity<WordsStyleClass>()
+                .HasMany(g => g.Players)
+                .WithOne(p => p.WordsStyle)
+                .HasForeignKey(p => p.WordsStyleId);
 
             modelBuilder.Entity<GameClass>()
                 .HasOne(g => g.GameLevel)
@@ -93,6 +99,12 @@ namespace TypeRacerAPI.Data
                 new PlayerPowerClass { Id = 2, PlayerPowerName = "Rewind", PlayerPowerKey = "R", ImagePath = "/images/rewind.png", CooldownTime = 5, IsTimedPower = false},
                 new PlayerPowerClass { Id = 3, PlayerPowerName = "Invisible", PlayerPowerKey = "I", ImagePath = "/images/invisible.png", CooldownTime = 15, IsTimedPower = true}
             );
+
+            modelBuilder.Entity<WordsStyleClass>().HasData(
+               new WordsStyleClass { Id = 1, StyleName = "BoldDecorator", fontFamily = "Arial, sans-serif", fontWeight = "bold", fontStyle = null },
+               new WordsStyleClass { Id = 2, StyleName = "ItalicDecorator", fontFamily = "Georgia, serif", fontWeight = null, fontStyle = null },
+               new WordsStyleClass { Id = 3, StyleName = "FancyFontDecorator", fontFamily = "Courier New, monospace", fontWeight = "normal", fontStyle = "normal" }
+            ); 
 
             modelBuilder.Entity<BaseClasses.GameLevelClass>()
                 .Property(gl => gl.Id)

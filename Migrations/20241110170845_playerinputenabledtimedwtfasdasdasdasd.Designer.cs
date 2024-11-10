@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TypeRacerAPI.Data;
 
@@ -11,9 +12,11 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110170845_playerinputenabledtimedwtfasdasdasdasd")]
+    partial class playerinputenabledtimedwtfasdasdasdasd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,14 +236,9 @@ namespace TypeRacerAPI.Migrations
                     b.Property<bool>("WordVisible")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("WordsStyleId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
-
-                    b.HasIndex("WordsStyleId");
 
                     b.ToTable("Players");
                 });
@@ -474,20 +472,20 @@ namespace TypeRacerAPI.Migrations
                         new
                         {
                             Id = 1,
-                            StyleName = "BoldDecorator",
+                            StyleName = "bold",
                             fontFamily = "Arial, sans-serif",
                             fontWeight = "bold"
                         },
                         new
                         {
                             Id = 2,
-                            StyleName = "ItalicDecorator",
+                            StyleName = "Rewind",
                             fontFamily = "Georgia, serif"
                         },
                         new
                         {
                             Id = 3,
-                            StyleName = "FancyFontDecorator",
+                            StyleName = "Invisible",
                             fontFamily = "Courier New, monospace",
                             fontStyle = "normal",
                             fontWeight = "normal"
@@ -544,13 +542,7 @@ namespace TypeRacerAPI.Migrations
                         .WithMany("Players")
                         .HasForeignKey("GameId");
 
-                    b.HasOne("TypeRacerAPI.BaseClasses.WordsStyleClass", "WordsStyle")
-                        .WithMany("Players")
-                        .HasForeignKey("WordsStyleId");
-
                     b.Navigation("Game");
-
-                    b.Navigation("WordsStyle");
                 });
 
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerUseClass", b =>
@@ -616,11 +608,6 @@ namespace TypeRacerAPI.Migrations
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerClass", b =>
                 {
                     b.Navigation("PlayerPowerUses");
-                });
-
-            modelBuilder.Entity("TypeRacerAPI.BaseClasses.WordsStyleClass", b =>
-                {
-                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

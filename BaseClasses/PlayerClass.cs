@@ -16,6 +16,10 @@ namespace TypeRacerAPI.BaseClasses
         public bool WordVisible { get; set; } = true;
         public int WPM { get; set; } = -1;
         public string NickName { get; set; }
+        public int? WordsStyleId { get; set; } = 1;
+        [JsonIgnore]
+        public WordsStyleClass WordsStyle { get; set; } 
+        [JsonIgnore]
         public int? GameId { get; set; }
         [JsonIgnore]
         public GameClass Game { get; set; }
