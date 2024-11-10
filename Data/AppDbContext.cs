@@ -16,6 +16,8 @@ namespace TypeRacerAPI.Data
         public DbSet<PlayerPowerClass> PlayerPower { get; set; }
         public DbSet<PlayerPowerUseClass> PlayerPowerUses { get; set; }
         public DbSet<WordsClass> Words { get; set; }
+        public DbSet<GameLogClass> GameLog { get; set; }
+        public DbSet<LogTypeClass> LogType { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +48,24 @@ namespace TypeRacerAPI.Data
                 .HasForeignKey(p => p.PlayerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<GameLogClass>()
+               .HasOne(p => p.Game)
+               .WithMany(game => game.GameLog)
+               .HasForeignKey(p => p.GameId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<GameLogClass>()
+               .HasOne(p => p.Player)
+               .WithMany(player => player.GameLog)
+               .HasForeignKey(p => p.PlayerId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<GameLogClass>()
+               .HasOne(p => p.LogType)
+               .WithMany(logType => logType.GameLog)
+               .HasForeignKey(p => p.LogTypeId)
+               .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<PlayerPowerUseClass>()
                 .HasOne(pp => pp.PlayerPower)
                 .WithMany(ppBase => ppBase.PlayerPowerUses)
@@ -57,15 +77,21 @@ namespace TypeRacerAPI.Data
                 new GameLevelClass { Id = 3, GameLevelName = "Advanced" }
             );
 
+            modelBuilder.Entity<LogTypeClass>().HasData(
+                new LogTypeClass { Id = 1, LogTypeName = "Error" },
+                new LogTypeClass { Id = 2, LogTypeName = "GameLog" },
+                new LogTypeClass { Id = 3, LogTypeName = "Information" }
+            );
+
             modelBuilder.Entity<GameTypeClass>().HasData(
                 new GameTypeClass { Id = 1, GameTypeName = "TimeAttack" },
                 new GameTypeClass { Id = 2, GameTypeName = "FluentType" }
             );
 
             modelBuilder.Entity<PlayerPowerClass>().HasData(
-                new PlayerPowerClass { Id = 1, PlayerPowerName = "Freeze", PlayerPowerKey = "F", ImagePath = "/images/freeze.png", CooldownTime = 10},
-                new PlayerPowerClass { Id = 2, PlayerPowerName = "Rewind", PlayerPowerKey = "R", ImagePath = "/images/rewind.png", CooldownTime = 5},
-                new PlayerPowerClass { Id = 3, PlayerPowerName = "Invisible", PlayerPowerKey = "I", ImagePath = "/images/invisible.png", CooldownTime = 15}
+                new PlayerPowerClass { Id = 1, PlayerPowerName = "Freeze", PlayerPowerKey = "F", ImagePath = "/images/freeze.png", CooldownTime = 10, IsTimedPower = true},
+                new PlayerPowerClass { Id = 2, PlayerPowerName = "Rewind", PlayerPowerKey = "R", ImagePath = "/images/rewind.png", CooldownTime = 5, IsTimedPower = false},
+                new PlayerPowerClass { Id = 3, PlayerPowerName = "Invisible", PlayerPowerKey = "I", ImagePath = "/images/invisible.png", CooldownTime = 15, IsTimedPower = true}
             );
 
             modelBuilder.Entity<BaseClasses.GameLevelClass>()

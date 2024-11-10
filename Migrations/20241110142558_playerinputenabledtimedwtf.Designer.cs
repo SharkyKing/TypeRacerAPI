@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TypeRacerAPI.Data;
 
@@ -11,9 +12,11 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110142558_playerinputenabledtimedwtf")]
+    partial class playerinputenabledtimedwtf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,7 +288,7 @@ namespace TypeRacerAPI.Migrations
                             Id = 2,
                             CooldownTime = 5,
                             ImagePath = "/images/rewind.png",
-                            IsTimedPower = false,
+                            IsTimedPower = true,
                             PlayerPowerKey = "R",
                             PlayerPowerName = "Rewind"
                         },
@@ -294,7 +297,7 @@ namespace TypeRacerAPI.Migrations
                             Id = 3,
                             CooldownTime = 15,
                             ImagePath = "/images/invisible.png",
-                            IsTimedPower = true,
+                            IsTimedPower = false,
                             PlayerPowerKey = "I",
                             PlayerPowerName = "Invisible"
                         });

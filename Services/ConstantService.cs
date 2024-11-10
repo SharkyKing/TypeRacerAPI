@@ -1,8 +1,22 @@
-﻿namespace TypeRacerAPI.Services
+﻿using static TypeRacerAPI.EnumClass;
+
+namespace TypeRacerAPI.Services
 {
     public static class ConstantService
     {
         public static int StartGameCountdownSeconds = 3;
-        public static int GameCountdownSeconds = 60;
+        public static int GameCountdownSeconds = 500;
+        public static int RewindWordCount = 3;
+        public static int TimedPowerSeconds = 5;
+
+        public static Dictionary<HubCall, string> HubCalls = new Dictionary<HubCall, string>()
+        {
+            { HubCall.Done, "done" },
+            { HubCall.ReceiveConnectionId, "ReceiveConnectionId" },
+            { HubCall.UpdateGame, "UpdateGame" },
+            { HubCall.TimerClient, "timerClient" },
+            { HubCall.CooldownTimer, "cooldowntimer" },
+            { HubCall.SendMessageToGame, "SendMessageToGame" }
+        };
     }
 }

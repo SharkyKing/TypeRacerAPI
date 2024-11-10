@@ -18,7 +18,6 @@ namespace TypeRacerAPI.DesignPatterns.Facade
         private readonly ObserverController _observerController;
 
         private PlayerFactory _playerFactory;
-
         public GameJoinFacade(AppDbContext context, IHubContext<GameHub> hubContext, ObserverController observerController, GameService gameService)
         {
             _appDbContext = context;

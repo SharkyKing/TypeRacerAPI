@@ -9,7 +9,7 @@ namespace TypeRacerAPI.BaseClasses
         public string ImagePath { get; set; }
         public string PlayerPowerKey { get; set; }
         public int CooldownTime { get; set; }
-        public bool IsOneTimeUse { get; set; }
+        public bool IsTimedPower { get; set; }
         [JsonIgnore]
         public virtual ICollection<PlayerPowerUseClass> PlayerPowerUses { get; set; }
     }

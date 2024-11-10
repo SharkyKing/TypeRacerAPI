@@ -12,8 +12,8 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241106185225_IsInitialized")]
-    partial class IsInitialized
+    [Migration("20241110134832_playerinputenabledtimed")]
+    partial class playerinputenabledtimed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,41 @@ namespace TypeRacerAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameLogClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LogTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("LogTypeId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("GameLog");
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameTypeClass", b =>
                 {
                     b.Property<int>("Id")
@@ -124,6 +159,40 @@ namespace TypeRacerAPI.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.LogTypeClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("LogTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            LogTypeName = "Error"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            LogTypeName = "GameLog"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            LogTypeName = "Information"
+                        });
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerClass", b =>
                 {
                     b.Property<int?>("Id")
@@ -135,8 +204,14 @@ namespace TypeRacerAPI.Migrations
                     b.Property<int>("CurrentWordIndex")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameId")
+                    b.Property<int?>("GameId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("InputEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsConnected")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsInitialized")
                         .HasColumnType("bit");
@@ -180,7 +255,7 @@ namespace TypeRacerAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsOneTimeUse")
+                    b.Property<bool>("IsTimedPower")
                         .HasColumnType("bit");
 
                     b.Property<string>("PlayerPowerKey")
@@ -201,7 +276,7 @@ namespace TypeRacerAPI.Migrations
                             Id = 1,
                             CooldownTime = 10,
                             ImagePath = "/images/freeze.png",
-                            IsOneTimeUse = false,
+                            IsTimedPower = true,
                             PlayerPowerKey = "F",
                             PlayerPowerName = "Freeze"
                         },
@@ -210,7 +285,7 @@ namespace TypeRacerAPI.Migrations
                             Id = 2,
                             CooldownTime = 5,
                             ImagePath = "/images/rewind.png",
-                            IsOneTimeUse = false,
+                            IsTimedPower = true,
                             PlayerPowerKey = "R",
                             PlayerPowerName = "Rewind"
                         },
@@ -219,7 +294,7 @@ namespace TypeRacerAPI.Migrations
                             Id = 3,
                             CooldownTime = 15,
                             ImagePath = "/images/invisible.png",
-                            IsOneTimeUse = false,
+                            IsTimedPower = false,
                             PlayerPowerKey = "I",
                             PlayerPowerName = "Invisible"
                         });
@@ -384,13 +459,36 @@ namespace TypeRacerAPI.Migrations
                     b.Navigation("GameType");
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameLogClass", b =>
+                {
+                    b.HasOne("TypeRacerAPI.BaseClasses.GameClass", "Game")
+                        .WithMany("GameLog")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("TypeRacerAPI.BaseClasses.LogTypeClass", "LogType")
+                        .WithMany("GameLog")
+                        .HasForeignKey("LogTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("TypeRacerAPI.BaseClasses.PlayerClass", "Player")
+                        .WithMany("GameLog")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Game");
+
+                    b.Navigation("LogType");
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerClass", b =>
                 {
                     b.HasOne("TypeRacerAPI.BaseClasses.GameClass", "Game")
                         .WithMany("Players")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GameId");
 
                     b.Navigation("Game");
                 });
@@ -426,6 +524,8 @@ namespace TypeRacerAPI.Migrations
 
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.GameClass", b =>
                 {
+                    b.Navigation("GameLog");
+
                     b.Navigation("Players");
                 });
 
@@ -441,8 +541,15 @@ namespace TypeRacerAPI.Migrations
                     b.Navigation("Games");
                 });
 
+            modelBuilder.Entity("TypeRacerAPI.BaseClasses.LogTypeClass", b =>
+                {
+                    b.Navigation("GameLog");
+                });
+
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerClass", b =>
                 {
+                    b.Navigation("GameLog");
+
                     b.Navigation("PlayerPowerUses");
                 });
 

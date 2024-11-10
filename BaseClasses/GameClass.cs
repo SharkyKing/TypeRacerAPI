@@ -12,6 +12,7 @@ namespace TypeRacerAPI.BaseClasses
         public bool IsOver { get; set; } = false;
         public long StartTime { get; set; } = 0;
         public virtual ICollection<PlayerClass> Players { get; set; }
+        public virtual ICollection<GameLogClass> GameLog { get; set; }
         [JsonIgnore]
         public virtual GameLevelClass GameLevel { get; set; }
         [JsonIgnore]

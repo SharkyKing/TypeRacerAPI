@@ -5,14 +5,14 @@
 namespace TypeRacerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class isreceivedpoweruse : Migration
+    public partial class playerinputenabled : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsReceived",
-                table: "PlayerPowerUses",
+                name: "InputEnabled",
+                table: "Players",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -22,8 +22,8 @@ namespace TypeRacerAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsReceived",
-                table: "PlayerPowerUses");
+                name: "InputEnabled",
+                table: "Players");
         }
     }
 }

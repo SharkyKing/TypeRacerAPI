@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Data;
-using TypeRacerAPI.DesignPatterns.AbstractFactory.Game.Enum;
 using TypeRacerAPI.DesignPatterns.Observer.Interface;
-using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using TypeRacerAPI.Hubs;
+using System.Collections.Generic;
 
 namespace TypeRacerAPI.DesignPatterns.Observer
 {
@@ -12,7 +11,6 @@ namespace TypeRacerAPI.DesignPatterns.Observer
     {
         private static ObserverController _instance;
         private static readonly object _lock = new object();
-
         private IServiceProvider _serviceProvider;
         private List<IObserver> observers = new List<IObserver>();
 
@@ -35,19 +33,18 @@ namespace TypeRacerAPI.DesignPatterns.Observer
             {
                 _instance._serviceProvider = serviceProvider;
             }
+
             return _instance;
         }
 
-
         public void Attach(IObserver observer) => observers.Add(observer);
 
-        public void Notify()
+        public async ValueTask Notify(IServiceProvider serviceProvider)
         {
             foreach (var observer in observers)
             {
-                observer.Update();
+                _ = observer.Update(serviceProvider);
             }
         }
     }
-
 }

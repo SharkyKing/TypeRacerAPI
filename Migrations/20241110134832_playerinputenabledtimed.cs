@@ -5,56 +5,52 @@
 namespace TypeRacerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class powercooldowndefault : Migration
+    public partial class playerinputenabledtimed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.RenameColumn(
+                name: "IsOneTimeUse",
+                table: "PlayerPower",
+                newName: "IsTimedPower");
+
             migrationBuilder.UpdateData(
                 table: "PlayerPower",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "CooldownTime",
-                value: 10);
+                column: "IsTimedPower",
+                value: true);
 
             migrationBuilder.UpdateData(
                 table: "PlayerPower",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "CooldownTime",
-                value: 5);
-
-            migrationBuilder.UpdateData(
-                table: "PlayerPower",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "CooldownTime",
-                value: 15);
+                column: "IsTimedPower",
+                value: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.RenameColumn(
+                name: "IsTimedPower",
+                table: "PlayerPower",
+                newName: "IsOneTimeUse");
+
             migrationBuilder.UpdateData(
                 table: "PlayerPower",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "CooldownTime",
-                value: 0);
+                column: "IsOneTimeUse",
+                value: false);
 
             migrationBuilder.UpdateData(
                 table: "PlayerPower",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "CooldownTime",
-                value: 0);
-
-            migrationBuilder.UpdateData(
-                table: "PlayerPower",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "CooldownTime",
-                value: 0);
+                column: "IsOneTimeUse",
+                value: false);
         }
     }
 }

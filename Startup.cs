@@ -61,7 +61,18 @@ public class Startup
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<GameTimerService>();
-        services.AddScoped<GameObserver>();
+
+        services.AddSingleton<ObserverController>(provider =>
+        {
+            var serviceProvider = provider;  
+            return ObserverController.GetInstance(serviceProvider);
+        });
+
+        services.AddSingleton<GameService>(provider =>
+        {
+            var serviceProvider = provider;
+            return GameService.GetInstance(serviceProvider);
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

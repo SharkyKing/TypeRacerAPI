@@ -5,21 +5,14 @@
 namespace TypeRacerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class IsInitialized : Migration
+    public partial class messageBridgeVanGameIDNULL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsInitialized",
-                table: "Players",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
             migrationBuilder.AlterColumn<int>(
-                name: "PlayerId",
-                table: "PlayerPowerUses",
+                name: "GameId",
+                table: "GameLog",
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
@@ -29,13 +22,9 @@ namespace TypeRacerAPI.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsInitialized",
-                table: "Players");
-
             migrationBuilder.AlterColumn<int>(
-                name: "PlayerId",
-                table: "PlayerPowerUses",
+                name: "GameId",
+                table: "GameLog",
                 type: "int",
                 nullable: false,
                 defaultValue: 0,

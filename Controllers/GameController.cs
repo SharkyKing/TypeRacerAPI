@@ -45,7 +45,6 @@ namespace TypeRacerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameClass>>> GetAllGames()
         {
-            // Still using context directly for this query as it's not in GameService
             var games = await _context.Games
                 .Include(g => g.Players)
                 .ToListAsync();

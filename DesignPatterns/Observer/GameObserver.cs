@@ -4,35 +4,30 @@ using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Observer.Interface;
 using TypeRacerAPI.Hubs;
+using TypeRacerAPI.Services;
+using static TypeRacerAPI.EnumClass;
 
 namespace TypeRacerAPI.DesignPatterns.Observer
 {
     public class GameObserver : IObserver
     {
         private int gameId;
-        private readonly IHubContext<GameHub> _hubContext;
-        private readonly IServiceProvider _serviceProvider;
-
-        public GameObserver(IHubContext<GameHub> hubContext, IServiceProvider serviceProvider)
-        {
-            _hubContext = hubContext;
-            _serviceProvider = serviceProvider;
-        }
 
         public void SetGameId(int id)
         {
             gameId = id;
         }
 
-        public async ValueTask Update()
+        public async ValueTask Update(IServiceProvider _serviceProvider)
         {
             try
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
+                    var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
                     var game = await _appDbContext.Games
+                        .Include(g => g.Players)
                         .SingleOrDefaultAsync(g => g.Id == gameId);
 
                     if (game == null)
@@ -41,7 +36,7 @@ namespace TypeRacerAPI.DesignPatterns.Observer
                         return;
                     }
 
-                    await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
+                    await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
                 }
             }
             catch (Exception ex)

@@ -5,14 +5,14 @@
 namespace TypeRacerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class iscooldownadd : Migration
+    public partial class playerinputenabledtimedwtf : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "IsOnCooldown",
-                table: "PlayerPowerUses",
+                name: "WordVisible",
+                table: "Players",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -22,8 +22,8 @@ namespace TypeRacerAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsOnCooldown",
-                table: "PlayerPowerUses");
+                name: "WordVisible",
+                table: "Players");
         }
     }
 }

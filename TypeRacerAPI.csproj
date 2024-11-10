@@ -19,10 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DesignPatterns\Bridge\" />
+    <Folder Include="ArchitectureTemplates\PowerTemplate\" />
     <Folder Include="DesignPatterns\Decorator\" />
     <Folder Include="DesignPatterns\Command\" />
-    <Folder Include="DesignPatterns\Strategy\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
