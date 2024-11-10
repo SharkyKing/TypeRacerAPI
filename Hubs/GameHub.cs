@@ -11,6 +11,7 @@ using TypeRacerAPI.DesignPatterns.Facade;
 using TypeRacerAPI.DesignPatterns.Observer;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.Bridge;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -129,7 +130,7 @@ namespace TypeRacerAPI.Hubs
                                 {
                                     player.InputEnabled = false;
                                     await _context.SaveChangesAsync();
-                                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, gameId, player.Id);
+                                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, player.Id);
                                     await messageSystemBridge.SendMessageToGame("finished typing. Waiting for others..");
 
                                     List<PlayerClass> players = await _context.Players.Where(p => p.GameId == game.Id).ToListAsync();
@@ -215,7 +216,7 @@ namespace TypeRacerAPI.Hubs
         }
         public async Task SendMessage(int gameId, int playerId, string inputValue)
         {
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, gameId, playerId);
+            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, playerId);
             await messageSystemBridge.SendMessageToGame(inputValue);
         }
     }

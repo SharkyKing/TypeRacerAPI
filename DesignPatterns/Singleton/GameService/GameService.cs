@@ -5,6 +5,7 @@ using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Controllers.ControllerHelperClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
@@ -88,7 +89,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             game.Players.Add(player);
             await context.SaveChangesAsync();
 
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, game.Id, player.Id ?? 0);
+            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(),_serviceProvider, game.Id, player.Id ?? 0);
             await messageSystemBridge.SendMessageToGame("Joined this game");
 
             var powers = await context.PlayerPower.ToListAsync();
@@ -136,7 +137,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             using var context = GetContext();
             PlayerClass player = await context.Players.SingleOrDefaultAsync(player => player.Id == playerId);
             context.Attach(player);
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, player.GameId, player.Id ?? 0);
+            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, player.GameId, player.Id ?? 0);
             await messageSystemBridge.SendMessageToGame("Disconnected");
             player.GameId = null;
             player.IsConnected = false;
