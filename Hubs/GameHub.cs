@@ -123,15 +123,60 @@ namespace TypeRacerAPI.Hubs
                                 DateTime endTime = DateTime.UtcNow;
                                 DateTime startTime = new DateTime(game.StartTime * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
                                 player.WPM = LogicHelper.CalculateWPM(endTime, startTime, player);
+                                player.Finished = true;
 
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { game, playerWon = player });
+                                if(game.GameTypeId == 2)
+                                {
+                                    player.InputEnabled = false;
+                                    await _context.SaveChangesAsync();
+                                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, gameId, player.Id);
+                                    await messageSystemBridge.SendMessageToGame("finished typing. Waiting for others..");
+
+                                    List<PlayerClass> players = await _context.Players.Where(p => p.GameId == game.Id).ToListAsync();
+
+                                    bool allFinished = true;
+                                    PlayerClass playerWithLeastMistakes = null;
+                                    int leastMistakes = int.MinValue;
+
+                                    foreach (PlayerClass playerUnit in players)
+                                    {
+                                        if (!player.Finished)
+                                        {
+                                            allFinished = false;
+                                            break;
+                                        }
+
+                                        if(playerUnit.MistakeCount > leastMistakes && playerUnit.Finished)
+                                        {
+                                            playerWithLeastMistakes = playerUnit;
+                                        }
+                                    }
+
+                                    if (allFinished)
+                                    {
+                                        game.IsOver = true;
+                                        await _context.SaveChangesAsync();
+                                        await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
+                                        await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = playerWithLeastMistakes });
+                                    }
+
+                                }
+                                else
+                                {
+                                    game.IsOver = true;
+                                    await _context.SaveChangesAsync();
+                                    await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
+                                    await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
+                                }
                             }
                         }
+                        else
+                        {
+                            player.MistakeCount++;
+                            await _context.SaveChangesAsync();
+                            await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
+                        }
                     }
-
-
                 }
             }
             catch (Exception ex)

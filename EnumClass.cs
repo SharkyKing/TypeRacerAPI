@@ -11,5 +11,12 @@
             CooldownTimer,
             SendMessageToGame
         }
+
+        public enum PlayerGameEndType
+        {
+            Won, 
+            Lost, 
+            Tie
+        }
     }
 }

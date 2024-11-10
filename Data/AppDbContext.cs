@@ -19,6 +19,7 @@ namespace TypeRacerAPI.Data
         public DbSet<GameLogClass> GameLog { get; set; }
         public DbSet<LogTypeClass> LogType { get; set; }
         public DbSet<WordsStyleClass> WordsStyle { get; set; }
+        public DbSet<PlayerGameResultTypeClass> PlayerGameResultType { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -81,6 +82,12 @@ namespace TypeRacerAPI.Data
                 new GameLevelClass { Id = 1, GameLevelName = "Beginner" },
                 new GameLevelClass { Id = 2, GameLevelName = "Normal" },
                 new GameLevelClass { Id = 3, GameLevelName = "Advanced" }
+            );
+
+            modelBuilder.Entity<PlayerGameResultTypeClass>().HasData(
+                new PlayerGameResultTypeClass { Id = 1, Title = "You WON!", Text = "Congratulations!", GifUrl= "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGkweWlweTBuanJjeWN0d2xna3R2YzJ0YWVoZTRkNmZhMTV5MjZrayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqssRweIhlz209i/giphy.gif" },
+                new PlayerGameResultTypeClass { Id = 2, Title = "You lost :(", Text = "Better luck next time", GifUrl= "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnBpM3dvYjgyYWdhaXJ0dzk3M2NkY3U3NzVzdzExamd6N2VkYTYweiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B4uP3h97Hi2UaqS0E3/giphy.gif" },
+                new PlayerGameResultTypeClass { Id = 3, Title = "Nobody won this game", Text = "Be faster next time!", GifUrl= "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnBpM3dvYjgyYWdhaXJ0dzk3M2NkY3U3NzVzdzExamd6N2VkYTYweiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B4uP3h97Hi2UaqS0E3/giphy.gif" }
             );
 
             modelBuilder.Entity<LogTypeClass>().HasData(

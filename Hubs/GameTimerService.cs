@@ -53,36 +53,43 @@ public class GameTimerService
                 }
 
                 await _observerController.Notify(_serviceProvider);
-                _ = StartGameTimer(game, _serviceProvider);
+                _ = StartGameTimer(game.Id, _serviceProvider);
             }
         }
     }
-    public async Task StartGameTimer(GameClass game, IServiceProvider _serviceProvider)
+    public async Task StartGameTimer(int gameId, IServiceProvider _serviceProvider)
     {
-        if (game != null)
+        using (var scope = _serviceProvider.CreateScope())
         {
-            using (var scope = _serviceProvider.CreateScope())
+            var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
+
+            GameClass game = await _appDbContext.Games.SingleOrDefaultAsync(game => game.Id == gameId);
+
+            game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
+            await _appDbContext.SaveChangesAsync();
+
+            int time = ConstantService.GameCountdownSeconds;
+
+            while (time >= 0)
             {
-                var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
+                string timeString = LogicHelper.CalculateTime(time);
 
-                game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
-                await _appDbContext.SaveChangesAsync();
+                await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.TimerClient], new { countDown = timeString, msg = "Time left" });
+                await Task.Delay(1000);
 
-                int time = ConstantService.GameCountdownSeconds;
+                game = await _appDbContext.Games.SingleOrDefaultAsync(game => game.Id == gameId);
 
-                while (time >= 0)
+                if (game.IsOver)
                 {
-                    string timeString = LogicHelper.CalculateTime(time);
-
-                    await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.TimerClient], new { countDown = timeString, msg = "Time left" });
-                    await Task.Delay(1000);
-                    time--;
+                    return;
                 }
 
-                PlayerClass player = new PlayerClass();
-                await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { game, playerWon = player });
+                time--;
             }
+
+            PlayerClass player = new PlayerClass();
+            await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
         }
     }
     #endregion

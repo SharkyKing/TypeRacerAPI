@@ -51,6 +51,11 @@ namespace TypeRacerAPI.DesignPatterns.AbstractFactory.Game
                 }
             }
 
+            if (ConstantService.IsDevelopment)
+            {
+                game.Words = ConstantService.TestWords;
+            }
+
             game.GameLevelId = activeGameLevel;
             game.GameTypeId = activeGameType;
             game.Players = new List<PlayerClass>();

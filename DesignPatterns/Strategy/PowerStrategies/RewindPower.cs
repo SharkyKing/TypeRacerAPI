@@ -40,7 +40,7 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
                                     ppu.PlayerPowerId == playerPowerCasted.Id &&
                                     ppu.PlayerId == victimPlayer.Id);
 
-                if (!playerPowerUse.IsOnCooldown && !playerPowerUse.IsUsed)
+                if (!playerPowerUse.IsOnCooldown && !playerPowerUse.IsUsed && !victimPlayer.Finished)
                 {
                     playerPowerUse.IsUsed = true;
                     playerPowerUseVictim.IsReceived = true;

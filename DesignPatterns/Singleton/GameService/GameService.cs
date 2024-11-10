@@ -26,6 +26,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         public List<GameLevelClass> GameLevels { get; private set; }
         public List<PlayerPowerClass> Powers { get; private set; }
         public List<WordsStyleClass> WordStyles { get; private set; }
+        public List<PlayerGameResultTypeClass> PlayerGameResults { get; private set; }
         #endregion
         private GameService(IServiceProvider serviceProvider)
         {
@@ -38,6 +39,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
                 GameLevels = context.GameLevel.ToList();
                 Powers = context.PlayerPower.ToList();
                 WordStyles = context.WordsStyle.ToList();
+                PlayerGameResults = context.PlayerGameResultType.ToList();
             }
         }
         public static GameService GetInstance(IServiceProvider serviceProvider)
