@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Decorator;
+using TypeRacerAPI.DesignPatterns.Command;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -84,8 +85,28 @@ namespace TypeRacerAPI.Controllers
 		public ActionResult<IEnumerable<string>> GetWordStyles()
 		{
 			var decoratedWords = new List<string>();
+			List<WordsStyleClass> wordsStyleClasses = new List<WordsStyleClass>();
+			var database = new DatabaseReceiver();
+			try
+			{
+				var invoker = new DatabaseInvoker();
+				var selectCommand = new SelectCommand(database, "WordsStyle");
+				invoker.AddCommand(selectCommand);
+				invoker.ExecuteCommands();
+				wordsStyleClasses = new WordsStyleClass().Filler(database._results);
 
-			foreach (var wordStyle in _gameService.WordStyles)
+				var deleteCommand = new DeleteCommand(database, 0, "WordsStyle");
+				var updateCommand = new UpdateCommand(database, "WordsStyle", 0, "test", "");
+                invoker.AddCommand(deleteCommand);
+				invoker.AddCommand(updateCommand);
+				//invoker.ExecuteCommands();
+			}
+            catch
+            {
+
+            }
+
+			foreach (var wordStyle in (database._results == null ? _gameService.WordStyles : wordsStyleClasses))
 			{
 				var word = new WordStyleDecorator(wordStyle.StyleName);
 
