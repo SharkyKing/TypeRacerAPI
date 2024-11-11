@@ -56,6 +56,7 @@ namespace TypeRacerAPI.DesignPatterns.AbstractFactory.Game
                 game.Words = ConstantService.TestWords;
             }
 
+            game.IsOpen = true;
             game.GameLevelId = activeGameLevel;
             game.GameTypeId = activeGameType;
             game.Players = new List<PlayerClass>();

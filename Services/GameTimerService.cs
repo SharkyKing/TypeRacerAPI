@@ -78,7 +78,9 @@ public class GameTimerService
                 await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.TimerClient], new { countDown = timeString, msg = "Time left" });
                 await Task.Delay(1000);
 
-                game = await _appDbContext.Games.SingleOrDefaultAsync(game => game.Id == gameId);
+                game = await _appDbContext.Games
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(game => game.Id == gameId);
 
                 if (game.IsOver)
                 {
@@ -125,7 +127,9 @@ public class GameTimerService
             while (!allTimersFinished)
             {
                 bool stillLeftTimers = false;
-                PlayerClass player = await _appDbContext.Players.SingleOrDefaultAsync(player => player.Id == playerId);
+                PlayerClass player = await _appDbContext.Players
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(player => player.Id == playerId);
                 if (!player.IsConnected) return;
                 foreach (KeyValuePair<PlayerPowerUseClass, int> pair in playerPowerUseCoolDownLeft)
                 {

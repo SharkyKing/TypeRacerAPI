@@ -12,6 +12,7 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
+using static TypeRacerAPI.Services.UserInputService;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -82,108 +83,16 @@ namespace TypeRacerAPI.Hubs
                 }
             }
         }
-        public async Task UserInput(string userInput, int gameId)
+        public async Task UserInput(string userInput, int gameId, int playerId)
         {
-            try
+            UserInputServiceCheckResult userInputServiceCheckResult = await UserInputService.CheckUserInput(playerId, gameId, userInput, _serviceProvider);
+
+            if (userInputServiceCheckResult.powerUsed)
             {
-                var game = await _context.Games
-                .Include(g => g.Players)
-                .FirstOrDefaultAsync(g => g.Id == gameId);
-
-                if (game != null && !game.IsOpen && !game.IsOver)
-                {
-                    var player = game.Players.FirstOrDefault(p => p.SocketID == Context.ConnectionId);
-
-                    if (player != null)
-                    {
-                        PowerService powerController = new PowerService();
-
-                        bool powerUsed = await powerController.TryAttack(userInput, player.Id, game.Id, _serviceProvider);
-
-                        if (powerUsed)
-                        {
-                            _ = _observerController.Notify(_serviceProvider);
-                            _ = _gameTimerService.PowerCoolDownTimer(player.Id, Context.ConnectionId, _serviceProvider);
-                            return;
-                        }
-
-                        var words = game.Words.Split(" ");
-                        string word = words[player.CurrentWordIndex];
-
-                        if (word == userInput)
-                        {
-                            player.CurrentWordIndex++;
-
-                            if (player.CurrentWordIndex < words.Length)
-                            {
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                            }
-                            else
-                            {
-                                DateTime endTime = DateTime.UtcNow;
-                                DateTime startTime = new DateTime(game.StartTime * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
-                                player.WPM = LogicHelper.CalculateWPM(endTime, startTime, player);
-                                player.Finished = true;
-
-                                if(game.GameTypeId == 2)
-                                {
-                                    player.InputEnabled = false;
-                                    await _context.SaveChangesAsync();
-                                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, player.Id);
-                                    await messageSystemBridge.SendMessageToGame("finished typing. Waiting for others..");
-
-                                    List<PlayerClass> players = await _context.Players.Where(p => p.GameId == game.Id).ToListAsync();
-
-                                    bool allFinished = true;
-                                    PlayerClass playerWithLeastMistakes = null;
-                                    int leastMistakes = int.MinValue;
-
-                                    foreach (PlayerClass playerUnit in players)
-                                    {
-                                        if (!player.Finished)
-                                        {
-                                            allFinished = false;
-                                            break;
-                                        }
-
-                                        if(playerUnit.MistakeCount > leastMistakes && playerUnit.Finished)
-                                        {
-                                            playerWithLeastMistakes = playerUnit;
-                                        }
-                                    }
-
-                                    if (allFinished)
-                                    {
-                                        game.IsOver = true;
-                                        await _context.SaveChangesAsync();
-                                        await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                                        await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = playerWithLeastMistakes });
-                                    }
-
-                                }
-                                else
-                                {
-                                    game.IsOver = true;
-                                    await _context.SaveChangesAsync();
-                                    await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                                    await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
-                                }
-                            }
-                        }
-                        else
-                        {
-                            player.MistakeCount++;
-                            await _context.SaveChangesAsync();
-                            await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                        }
-                    }
-                }
+                _ = _gameTimerService.PowerCoolDownTimer(playerId, Context.ConnectionId, _serviceProvider);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error handling user input: " + ex.Message);
-            }
+
+            _ = _observerController.Notify(_serviceProvider);
         }
         public async Task StartPowerCooldown(int id)
         {
