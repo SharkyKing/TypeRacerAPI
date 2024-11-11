@@ -7,10 +7,12 @@ namespace TypeRacerAPI.BaseClasses
     {
         public int? Id { get; set; } = null;
         public int CurrentWordIndex { get; set; } = 0;
+        public int MistakeCount { get; set; } = 0;
         public string SocketID { get; set; }
         public bool IsPartyLeader { get; set; } = false;
         public bool IsSpectator { get; set; } = false;
         public bool IsInitialized { get; set; } = false;
+        public bool Finished { get; set; } = false;
         public bool IsConnected { get; set; } = true;
         public bool InputEnabled { get; set; } = true;
         public bool WordVisible { get; set; } = true;

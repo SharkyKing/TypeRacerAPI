@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Strategy.Interface;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
@@ -40,12 +41,12 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
                                     ppu.PlayerPowerId == playerPowerCasted.Id &&
                                     ppu.PlayerId == victimPlayer.Id);
 
-                if (!playerPowerUse.IsOnCooldown && !playerPowerUse.IsUsed)
+                if (!playerPowerUse.IsOnCooldown && !playerPowerUse.IsUsed && !victimPlayer.Finished)
                 {
                     playerPowerUse.IsUsed = true;
                     playerPowerUseVictim.IsReceived = true;
 
-                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(serviceProvider, attackingPlayer.GameId, attackingPlayer.Id);
+                    MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), serviceProvider, attackingPlayer.GameId, attackingPlayer.Id);
                     await messageSystemBridge.SendMessageToGame("Used power [" + playerPowerCasted.PlayerPowerName + "] on player " + victimPlayer.NickName);
 
                     victimPlayer.WordVisible = false;

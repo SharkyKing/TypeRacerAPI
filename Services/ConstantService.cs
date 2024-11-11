@@ -5,9 +5,11 @@ namespace TypeRacerAPI.Services
     public static class ConstantService
     {
         public static int StartGameCountdownSeconds = 3;
-        public static int GameCountdownSeconds = 500;
+        public static int GameCountdownSeconds = 60;
         public static int RewindWordCount = 3;
         public static int TimedPowerSeconds = 5;
+        public static bool IsDevelopment = true;
+        public static string TestWords = "Test test";
 
         public static Dictionary<HubCall, string> HubCalls = new Dictionary<HubCall, string>()
         {

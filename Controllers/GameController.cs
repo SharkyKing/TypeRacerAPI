@@ -131,7 +131,12 @@ namespace TypeRacerAPI.Controllers
 			return Ok(decoratedWords);
 		}
 
-		[HttpGet("player/{id}/powers")]
+        [HttpGet("playerGameResults")]
+        public ActionResult<IEnumerable<PlayerPowerClass>> GetPlayerGameResults()
+        {
+            return Ok(_gameService.PlayerGameResults);
+        }
+        [HttpGet("player/{id}/powers")]
         public async Task<ActionResult<IEnumerable<PlayerPowerUseRelation>>> GetPlayerPowers(int id)
         {
             var playerPowers = await _gameService.GetPlayerPowers(id);

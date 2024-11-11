@@ -11,6 +11,8 @@ using TypeRacerAPI.DesignPatterns.Facade;
 using TypeRacerAPI.DesignPatterns.Observer;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.Bridge;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
+using static TypeRacerAPI.Services.UserInputService;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -81,63 +83,16 @@ namespace TypeRacerAPI.Hubs
                 }
             }
         }
-        public async Task UserInput(string userInput, int gameId)
+        public async Task UserInput(string userInput, int gameId, int playerId)
         {
-            try
+            UserInputServiceCheckResult userInputServiceCheckResult = await UserInputService.CheckUserInput(playerId, gameId, userInput, _serviceProvider);
+
+            if (userInputServiceCheckResult.powerUsed)
             {
-                var game = await _context.Games
-                .Include(g => g.Players)
-                .FirstOrDefaultAsync(g => g.Id == gameId);
-
-                if (game != null && !game.IsOpen && !game.IsOver)
-                {
-                    var player = game.Players.FirstOrDefault(p => p.SocketID == Context.ConnectionId);
-
-                    if (player != null)
-                    {
-                        PowerService powerController = new PowerService();
-
-                        bool powerUsed = await powerController.TryAttack(userInput, player.Id, game.Id, _serviceProvider);
-
-                        if (powerUsed)
-                        {
-                            _ = _observerController.Notify(_serviceProvider);
-                            _ = _gameTimerService.PowerCoolDownTimer(player.Id, Context.ConnectionId, _serviceProvider);
-                            return;
-                        }
-
-                        var words = game.Words.Split(" ");
-                        string word = words[player.CurrentWordIndex];
-
-                        if (word == userInput)
-                        {
-                            player.CurrentWordIndex++;
-
-                            if (player.CurrentWordIndex < words.Length)
-                            {
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                            }
-                            else
-                            {
-                                DateTime endTime = DateTime.UtcNow;
-                                DateTime startTime = new DateTime(game.StartTime * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
-                                player.WPM = LogicHelper.CalculateWPM(endTime, startTime, player);
-
-                                await _context.SaveChangesAsync();
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
-                                await Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { game, playerWon = player });
-                            }
-                        }
-                    }
-
-
-                }
+                _ = _gameTimerService.PowerCoolDownTimer(playerId, Context.ConnectionId, _serviceProvider);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error handling user input: " + ex.Message);
-            }
+
+            _ = _observerController.Notify(_serviceProvider);
         }
         public async Task StartPowerCooldown(int id)
         {
@@ -170,7 +125,7 @@ namespace TypeRacerAPI.Hubs
         }
         public async Task SendMessage(int gameId, int playerId, string inputValue)
         {
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(_serviceProvider, gameId, playerId);
+            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, playerId);
             await messageSystemBridge.SendMessageToGame(inputValue);
         }
     }

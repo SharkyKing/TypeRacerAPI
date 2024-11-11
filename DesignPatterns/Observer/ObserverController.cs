@@ -41,10 +41,27 @@ namespace TypeRacerAPI.DesignPatterns.Observer
 
         public async ValueTask Notify(IServiceProvider serviceProvider)
         {
+            List<IObserver> observersTemp = new List<IObserver>();
+
+            foreach(IObserver observer in observers)
+            {
+                observersTemp.Add(observer);
+            }
+
             foreach (var observer in observers)
             {
                 _ = observer.Update(serviceProvider);
+
+                if (observer.isExpired)
+                {
+                    observersTemp.Remove(observer);
+                }
             }
+            observers.Clear();
+            foreach (IObserver observer in observersTemp)
+            {
+                observers.Add(observer);
+            } 
         }
     }
 }

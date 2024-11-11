@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Data;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
@@ -10,13 +11,13 @@ namespace TypeRacerAPI.DesignPatterns.Bridge
 {
     public class MessageSystemBridge
     {
-        LogService logService;
+        LogController logController;
         IServiceProvider _serviceProvider;
         int? gameId;
         int? playerId;
-        public MessageSystemBridge(IServiceProvider serviceProvider, int? gameId, int? playerId)
+        public MessageSystemBridge(ILogService logService,IServiceProvider serviceProvider, int? gameId, int? playerId)
         {
-            logService = new LogService(serviceProvider, gameId, playerId);
+            logController = new LogController(logService, serviceProvider, gameId, playerId);
             _serviceProvider = serviceProvider;
             this.gameId = gameId;
             this.playerId = playerId;
@@ -35,7 +36,7 @@ namespace TypeRacerAPI.DesignPatterns.Bridge
                 await _hubContext.Clients.Group(gameId.ToString())
                     .SendAsync(ConstantService.HubCalls[HubCall.SendMessageToGame], new { playerNickName = player.NickName, msg = message });
 
-                await logService.LogGame(message);
+                await logController.LogMessage(message);
             }
         }
     }

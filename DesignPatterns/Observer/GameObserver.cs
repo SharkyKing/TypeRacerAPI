@@ -13,6 +13,8 @@ namespace TypeRacerAPI.DesignPatterns.Observer
     {
         private int gameId;
 
+        public bool isExpired { get; set; }
+
         public void SetGameId(int id)
         {
             gameId = id;
@@ -27,6 +29,7 @@ namespace TypeRacerAPI.DesignPatterns.Observer
                     var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                     var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
                     var game = await _appDbContext.Games
+                        .AsNoTracking()
                         .Include(g => g.Players)
                         .SingleOrDefaultAsync(g => g.Id == gameId);
 
@@ -34,6 +37,13 @@ namespace TypeRacerAPI.DesignPatterns.Observer
                     {
                         Console.WriteLine($"Game with ID {gameId} not found.");
                         return;
+                    }
+                    else
+                    {
+                        if (game.IsOver)
+                        {
+                            isExpired = true;
+                        }
                     }
 
                     await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.UpdateGame], game);
