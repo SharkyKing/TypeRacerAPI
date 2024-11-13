@@ -9,7 +9,7 @@ namespace TypeRacerAPI.Services
         public static int RewindWordCount = 3;
         public static int TimedPowerSeconds = 5;
         public static bool IsDevelopment = true;
-        public static string TestWords = "Test test";
+        public static string TestWords = "Test test test test test test";
 
         public static Dictionary<HubCall, string> HubCalls = new Dictionary<HubCall, string>()
         {

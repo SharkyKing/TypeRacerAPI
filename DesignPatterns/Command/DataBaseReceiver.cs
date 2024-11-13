@@ -7,7 +7,7 @@ namespace TypeRacerAPI.DesignPatterns.Command
 {
 	public class DatabaseReceiver
 	{
-		private readonly string _connectionString = "Server=LAPTOP-1NJBNQPI;Database=TypeRacer;User Id=root;Password=root123;Encrypt=True;TrustServerCertificate=True;";
+		private readonly string _connectionString = "Server=SHARKSTOP;Database=TypeRacer;User Id=root;Password=root123;Encrypt=True;TrustServerCertificate=True;";
 		public System.Data.DataTable? _results = null;
 
 		public void Select(string table)

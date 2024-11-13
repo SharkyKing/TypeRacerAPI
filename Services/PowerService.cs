@@ -28,6 +28,8 @@ namespace TypeRacerAPI.Services
 
                     if (!attackPlayerIDParseSuccess) return false;
 
+                    if (victimPlayerId == playerId) return false;
+
                     PowerController powerController = new PowerController(serviceProvider, playerId, victimPlayerId);
 
                     switch (powerType)
