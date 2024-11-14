@@ -31,7 +31,7 @@ namespace TypeRacerAPI.DesignPatterns.Facade
             gameService = _gameService;
         }
 
-        public async ValueTask<GameClass?> Execute(string nickName, string socketId, int activeGameType, int activeGameLevel, int gameId)
+        public async ValueTask<GameClass?> Execute(string nickName, string connectionGUID, int activeGameType, int activeGameLevel, int gameId)
         {
             GameClass? game = new GameClass();
             PlayerClass player = new PlayerClass();
@@ -46,7 +46,7 @@ namespace TypeRacerAPI.DesignPatterns.Facade
 
             if (game != null)
             {
-                playerFactory = new PlayerFactory(game.Id, nickName, socketId);
+                playerFactory = new PlayerFactory(game.Id, nickName, connectionGUID);
                 player = playerFactory.CreatePlayer(PlayerType.Leader);
                 await gameService.AddPlayerAsync(game, player);
             }

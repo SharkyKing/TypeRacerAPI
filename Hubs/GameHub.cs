@@ -41,11 +41,11 @@ namespace TypeRacerAPI.Hubs
             _serviceProvider = serviceProvider;
         }
 
-        public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel)
+        public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel, string connectionGUID)
         {
             IGameFacade gameCreateFacade = new GameCreateFacade(_context, _hubContext, _observerController, _gameService);
 
-            GameClass game = await gameCreateFacade.Execute(nickName, Context.ConnectionId, activeGameType, activeGameLevel, 0);
+            GameClass game = await gameCreateFacade.Execute(nickName, connectionGUID, activeGameType, activeGameLevel, 0);
 
             if (game != null)
             {
@@ -58,11 +58,11 @@ namespace TypeRacerAPI.Hubs
                 await gameObserver.Update(_serviceProvider);
             }
         }
-        public async Task JoinGame(string gameId, string nickName)
+        public async Task JoinGame(string gameId, string nickName, string connectionGUID)
         {
             IGameFacade gameJoinFacade = new GameJoinFacade(_context, _hubContext, _observerController, _gameService);
 
-            GameClass game = await gameJoinFacade.Execute(nickName, Context.ConnectionId, 0, 0, int.Parse(gameId));
+            GameClass game = await gameJoinFacade.Execute(nickName, connectionGUID, 0, 0, int.Parse(gameId));
 
             if (game != null)
             {
@@ -100,7 +100,7 @@ namespace TypeRacerAPI.Hubs
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            var playerDisconnecting = await _gameService.GetPlayerBySocketId(Context.ConnectionId);
+            var playerDisconnecting = await _gameService.GetPlayerByConnectionGUID(Context.ConnectionId);
 
             if (playerDisconnecting != null)
             {
@@ -110,6 +110,7 @@ namespace TypeRacerAPI.Hubs
 
             await base.OnDisconnectedAsync(exception);
         }
+
         public override async Task OnConnectedAsync()
         {
             string connectionId = Context.ConnectionId;

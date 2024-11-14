@@ -126,12 +126,13 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             return await context.Players
                 .FirstOrDefaultAsync(p => p.Id == playerId);
         }
-        public async Task<PlayerClass?> GetPlayerBySocketId(string socketId)
+        public async Task<PlayerClass?> GetPlayerByConnectionGUID(string connectionGUID)
         {
             using var context = GetContext();
             return await context.Players
-                .FirstOrDefaultAsync(p => p.SocketID == socketId);
+                .FirstOrDefaultAsync(p => p.ConnectionGUID == connectionGUID);
         }
+
         public async Task RemovePlayer(int? playerId)
         {
             using var context = GetContext();

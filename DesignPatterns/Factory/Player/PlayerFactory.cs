@@ -8,13 +8,13 @@ namespace TypeRacerAPI.DesignPatterns.Factory.Player
     {
         int gameId;
         string nickName;
-        string socketId;
+        string ConnectionGUID;
 
-        public PlayerFactory(int gameId, string nickName, string socketId)
+        public PlayerFactory(int gameId, string nickName, string connectionGUID)
         {
             this.gameId = gameId;
             this.nickName = nickName;
-            this.socketId = socketId;
+            this.ConnectionGUID = connectionGUID;
         }
 
         public PlayerClass CreatePlayer(PlayerType playerType)
@@ -41,7 +41,7 @@ namespace TypeRacerAPI.DesignPatterns.Factory.Player
             {
                 player.GameId = this.gameId;
                 player.NickName = this.nickName;
-                player.SocketID = this.socketId;
+                player.ConnectionGUID = this.ConnectionGUID;
             }
 
             return player;
