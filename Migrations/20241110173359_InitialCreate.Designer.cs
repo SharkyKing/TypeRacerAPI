@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TypeRacerAPI.Data;
 
@@ -11,9 +12,11 @@ using TypeRacerAPI.Data;
 namespace TypeRacerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110173359_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,15 +201,8 @@ namespace TypeRacerAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
-                    b.Property<string>("ConnectionGUID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CurrentWordIndex")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Finished")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("GameId")
                         .HasColumnType("int");
@@ -226,10 +222,11 @@ namespace TypeRacerAPI.Migrations
                     b.Property<bool>("IsSpectator")
                         .HasColumnType("bit");
 
-                    b.Property<int>("MistakeCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SocketID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -249,54 +246,6 @@ namespace TypeRacerAPI.Migrations
                     b.HasIndex("WordsStyleId");
 
                     b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerGameResultTypeClass", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GifUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PlayerGameResultType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            GifUrl = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGkweWlweTBuanJjeWN0d2xna3R2YzJ0YWVoZTRkNmZhMTV5MjZrayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0GqssRweIhlz209i/giphy.gif",
-                            Text = "Congratulations!",
-                            Title = "You WON!"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            GifUrl = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnBpM3dvYjgyYWdhaXJ0dzk3M2NkY3U3NzVzdzExamd6N2VkYTYweiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B4uP3h97Hi2UaqS0E3/giphy.gif",
-                            Text = "Better luck next time",
-                            Title = "You lost :("
-                        },
-                        new
-                        {
-                            Id = 3,
-                            GifUrl = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnBpM3dvYjgyYWdhaXJ0dzk3M2NkY3U3NzVzdzExamd6N2VkYTYweiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B4uP3h97Hi2UaqS0E3/giphy.gif",
-                            Text = "Be faster next time!",
-                            Title = "Nobody won this game"
-                        });
                 });
 
             modelBuilder.Entity("TypeRacerAPI.BaseClasses.PlayerPowerClass", b =>
