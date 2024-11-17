@@ -8,13 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07f7cdb5-7e15-4961-bc5c-aee717f2218d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/DependencyMocks.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameHubTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameHubTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/TypeRacerAPITest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/TypeRacerAPITest.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Controllers/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DesignPatterns/Singleton/GameService/GameService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DesignPatterns/Singleton/GameService/GameService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TypeRacerAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/TypeRacerAPI.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +24,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/167b1192c3874ca198d641611db2b8cf39428/c4/6f493eb5/InMemoryTable`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/75b9487230a349f1bc8839bc808ce065788a0/fd/b9bac35f/IHubContext`1.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -82,7 +79,8 @@
       <workItem from="1731842890731" duration="2921000" />
       <workItem from="1731852428273" duration="3830000" />
       <workItem from="1731856435328" duration="497000" />
-      <workItem from="1731856957396" duration="849000" />
+      <workItem from="1731856957396" duration="2590000" />
+      <workItem from="1731859890938" duration="2216000" />
     </task>
     <servers />
   </component>
@@ -90,6 +88,17 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />

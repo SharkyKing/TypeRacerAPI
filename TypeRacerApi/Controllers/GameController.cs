@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
@@ -122,12 +122,10 @@ namespace TypeRacerAPI.Controllers
 
                 if (!string.IsNullOrEmpty(wordStyle.fontStyle))
                 {
-                    word = new FontStyleDecorator(word, wordStyle.fontStyle);
+
+                    decoratedWords.Add(word.GetStyledText());
                 }
-
-                decoratedWords.Add(word.GetStyledText());
             }
-
             return Ok(decoratedWords);
         }
 
