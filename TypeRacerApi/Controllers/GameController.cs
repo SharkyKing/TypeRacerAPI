@@ -19,12 +19,12 @@ namespace TypeRacerAPI.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly GameService _gameService;
+        private readonly IGameService _gameService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly AppDbContext _context;
 
         public GameController(
-            GameService gameService,
+            IGameService gameService,
             IHubContext<GameHub> hubContext,
             AppDbContext context)
         {
@@ -81,61 +81,62 @@ namespace TypeRacerAPI.Controllers
         {
             return Ok(_gameService.Powers);
         }
-        [HttpGet("wordStyles")]
-		public ActionResult<IEnumerable<string>> GetWordStyles()
-		{
-			var decoratedWords = new List<string>();
-			List<WordsStyleClass> wordsStyleClasses = new List<WordsStyleClass>();
-			var database = new DatabaseReceiver();
-			try
-			{
-				var invoker = new DatabaseInvoker();
-				var selectCommand = new SelectCommand(database, "WordsStyle");
-				invoker.AddCommand(selectCommand);
-				invoker.ExecuteCommands();
-				wordsStyleClasses = new WordsStyleClass().Filler(database._results);
 
-				var deleteCommand = new DeleteCommand(database, 0, "WordsStyle");
-				var updateCommand = new UpdateCommand(database, "WordsStyle", 0, "test", "");
+        [HttpGet("wordStyles")]
+        public ActionResult<IEnumerable<string>> GetWordStyles()
+        {
+            var decoratedWords = new List<string>();
+            List<WordsStyleClass> wordsStyleClasses = new List<WordsStyleClass>();
+            var database = new DatabaseReceiver();
+            try
+            {
+                var invoker = new DatabaseInvoker();
+                var selectCommand = new SelectCommand(database, "WordsStyle");
+                invoker.AddCommand(selectCommand);
+                invoker.ExecuteCommands();
+                wordsStyleClasses = new WordsStyleClass().Filler(database._results);
+
+                var deleteCommand = new DeleteCommand(database, 0, "WordsStyle");
+                var updateCommand = new UpdateCommand(database, "WordsStyle", 0, "test", "");
                 invoker.AddCommand(deleteCommand);
-				invoker.AddCommand(updateCommand);
-				//invoker.ExecuteCommands();
-			}
+                invoker.AddCommand(updateCommand);
+                //invoker.ExecuteCommands();
+            }
             catch
             {
-
             }
 
-			foreach (var wordStyle in (database._results == null ? _gameService.WordStyles : wordsStyleClasses))
-			{
-				var word = new WordStyleDecorator(wordStyle.StyleName);
+            foreach (var wordStyle in (database._results == null ? _gameService.WordStyles : wordsStyleClasses))
+            {
+                var word = new WordStyleDecorator(wordStyle.StyleName);
 
-				if (!string.IsNullOrEmpty(wordStyle.fontFamily))
-				{
-					word = new FontFamilyDecorator(word, wordStyle.fontFamily);
-				}
+                if (!string.IsNullOrEmpty(wordStyle.fontFamily))
+                {
+                    word = new FontFamilyDecorator(word, wordStyle.fontFamily);
+                }
 
-				if (!string.IsNullOrEmpty(wordStyle.fontWeight))
-				{
-					word = new FontWeightDecorator(word, wordStyle.fontWeight);
-				}
+                if (!string.IsNullOrEmpty(wordStyle.fontWeight))
+                {
+                    word = new FontWeightDecorator(word, wordStyle.fontWeight);
+                }
 
-				if (!string.IsNullOrEmpty(wordStyle.fontStyle))
-				{
-					word = new FontStyleDecorator(word, wordStyle.fontStyle);
-				}
+                if (!string.IsNullOrEmpty(wordStyle.fontStyle))
+                {
+                    word = new FontStyleDecorator(word, wordStyle.fontStyle);
+                }
 
-				decoratedWords.Add(word.GetStyledText());
-			}
+                decoratedWords.Add(word.GetStyledText());
+            }
 
-			return Ok(decoratedWords);
-		}
+            return Ok(decoratedWords);
+        }
 
         [HttpGet("playerGameResults")]
         public ActionResult<IEnumerable<PlayerPowerClass>> GetPlayerGameResults()
         {
             return Ok(_gameService.PlayerGameResults);
         }
+
         [HttpGet("player/{id}/powers")]
         public async Task<ActionResult<IEnumerable<PlayerPowerUseRelation>>> GetPlayerPowers(int id)
         {
