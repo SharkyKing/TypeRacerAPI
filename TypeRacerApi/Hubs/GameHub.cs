@@ -10,6 +10,7 @@ using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using static TypeRacerAPI.Services.UserInputService;
+using TypeRacerAPI.Services.Interface;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -17,7 +18,7 @@ namespace TypeRacerAPI.Hubs
     {
         private readonly AppDbContext _context;
         private readonly IHubContext<GameHub> _hubContext;
-        private readonly GameTimerService _gameTimerService;
+        private readonly IGameTimerService _gameTimerService;
         private readonly GameService _gameService;
         private readonly ObserverController _observerController;
         private readonly IServiceProvider _serviceProvider;
@@ -25,7 +26,7 @@ namespace TypeRacerAPI.Hubs
         public GameHub(
             AppDbContext context,
             IHubContext<GameHub> hubContext,
-            GameTimerService gameTimerService,
+            IGameTimerService gameTimerService,
             GameService gameService,
             ObserverController observerController,
             IServiceProvider serviceProvider)

@@ -13,8 +13,9 @@ using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using TypeRacerAPI.DesignPatterns.Observer;
 using System;
 using static TypeRacerAPI.EnumClass;
+using TypeRacerAPI.Services.Interface;
 
-public class GameTimerService
+public class GameTimerService: IGameTimerService
 {
     #region PROPERTIES
     private readonly ObserverController _observerController;
