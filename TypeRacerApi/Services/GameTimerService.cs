@@ -14,6 +14,7 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using System;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.Services.Interface;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 
 public class GameTimerService: IGameTimerService
 {
@@ -22,7 +23,7 @@ public class GameTimerService: IGameTimerService
     private readonly IGameService _gameService;
 	private readonly IObserverController _observerController2;
 
-	#endregion
+    #endregion
 
 	public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
     {
@@ -76,7 +77,7 @@ public class GameTimerService: IGameTimerService
             game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
             await _appDbContext.SaveChangesAsync();
 
-            int time = ConstantService.GameCountdownSeconds;
+            int time = ConstantService.IsDevelopment ? ConstantService.GameCountdownSecondsTest : ConstantService.GameCountdownSeconds;
 
             while (time >= 0)
             {

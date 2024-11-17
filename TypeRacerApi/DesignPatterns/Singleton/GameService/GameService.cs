@@ -20,11 +20,11 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         #endregion
 
         #region DATA OBJECTS
-        public List<GameTypeClass> GameTypes { get; private set; }
-        public List<GameLevelClass> GameLevels { get; private set; }
-        public List<PlayerPowerClass> Powers { get; private set; }
-        public List<WordsStyleClass> WordStyles { get; private set; }
-        public List<PlayerGameResultTypeClass> PlayerGameResults { get; private set; }
+        public IEnumerable<GameTypeClass> GameTypes { get; private set; }
+        public IEnumerable<GameLevelClass> GameLevels { get; private set; }
+        public IEnumerable<PlayerPowerClass> Powers { get; private set; }
+        public IEnumerable<WordsStyleClass> WordStyles { get; private set; }
+        public IEnumerable<PlayerGameResultTypeClass> PlayerGameResults { get; private set; }
         #endregion
 
         private GameService(IServiceProvider serviceProvider)

@@ -12,6 +12,7 @@ using TypeRacerAPI.Services;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using Microsoft.AspNetCore.SignalR;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 
 public class Startup
 {
@@ -62,7 +63,7 @@ public class Startup
 
         services.AddScoped<GameTimerService>();
 
-        services.AddSingleton<ObserverController>(provider =>
+        services.AddSingleton<IObserverController, ObserverController>(provider =>
         {
             var serviceProvider = provider;  
             return ObserverController.GetInstance(serviceProvider);

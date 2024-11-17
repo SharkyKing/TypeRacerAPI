@@ -9,7 +9,11 @@ namespace TypeRacerAPI.Services
         public static int RewindWordCount = 3;
         public static int TimedPowerSeconds = 5;
         public static bool IsDevelopment = true;
+
+        #region TEST CONSTANTS
+        public static int GameCountdownSecondsTest = 60;
         public static string TestWords = "test test test";
+        #endregion
 
         public static Dictionary<HubCall, string> HubCalls = new Dictionary<HubCall, string>()
         {

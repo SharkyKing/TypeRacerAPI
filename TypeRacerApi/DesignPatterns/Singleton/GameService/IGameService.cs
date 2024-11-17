@@ -6,11 +6,11 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
 {
     public interface IGameService
     {
-        List<GameTypeClass> GameTypes { get; }
-        List<GameLevelClass> GameLevels { get; }
-        List<PlayerPowerClass> Powers { get; }
-        List<WordsStyleClass> WordStyles { get; }
-        List<PlayerGameResultTypeClass> PlayerGameResults { get; }
+        IEnumerable<GameTypeClass> GameTypes { get; }
+        IEnumerable<GameLevelClass> GameLevels { get; }
+        IEnumerable<PlayerPowerClass> Powers { get; }
+        IEnumerable<WordsStyleClass> WordStyles { get; }
+        IEnumerable<PlayerGameResultTypeClass> PlayerGameResults { get; }
         Task<GameClass?> GetGame(int gameId);
         ValueTask AddGameAsync(GameClass game);
         ValueTask AddPlayerAsync(GameClass game, PlayerClass player);
