@@ -10,13 +10,13 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.BaseClasses;
-using TypeRacerAPI.Services.Interface;
 using System.Linq.Expressions;
 using static TypeRacerAPI.EnumClass;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 
 namespace TypeRacerAPITest
 {
-	public class GameTimerServiceTest
+    public class GameTimerServiceTest
 	{
 		private readonly Mock<AppDbContext> _mockContext;
 		private readonly Mock<IHubContext<GameHub>> _mockHubContext;
