@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace TypeRacerAPI.DesignPatterns.Observer
 {
-    public class ObserverController
+    public class ObserverController : IObserverController
     {
         private static ObserverController _instance;
         private static readonly object _lock = new object();

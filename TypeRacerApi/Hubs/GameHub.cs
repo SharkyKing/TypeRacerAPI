@@ -11,6 +11,7 @@ using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using static TypeRacerAPI.Services.UserInputService;
 using TypeRacerAPI.Services.Interface;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -20,7 +21,7 @@ namespace TypeRacerAPI.Hubs
         private readonly IHubContext<GameHub> _hubContext;
         private readonly IGameTimerService _gameTimerService;
         private readonly GameService _gameService;
-        private readonly ObserverController _observerController;
+        private readonly IObserverController _observerController;
         private readonly IServiceProvider _serviceProvider;
 
         public GameHub(
@@ -28,7 +29,7 @@ namespace TypeRacerAPI.Hubs
             IHubContext<GameHub> hubContext,
             IGameTimerService gameTimerService,
             GameService gameService,
-            ObserverController observerController,
+            IObserverController observerController,
             IServiceProvider serviceProvider)
         {
             _context = context;

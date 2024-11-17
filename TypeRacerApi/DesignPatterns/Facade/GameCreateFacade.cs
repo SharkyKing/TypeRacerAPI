@@ -9,6 +9,7 @@ using TypeRacerAPI.DesignPatterns.Facade.Interface;
 using TypeRacerAPI.DesignPatterns.Factory.Player;
 using TypeRacerAPI.DesignPatterns.Factory.Player.Enum;
 using TypeRacerAPI.DesignPatterns.Observer;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
@@ -17,13 +18,13 @@ namespace TypeRacerAPI.DesignPatterns.Facade
 {
     public class GameCreateFacade : IGameFacade
     {
-        public Singleton.GameService.GameService gameService { get; set; }
+        public IGameService gameService { get; set; }
         public PlayerFactory playerFactory { get; set; }
         public AppDbContext appDbContext { get; set; }
         public IHubContext<GameHub> _hubContext { get; set; }
-        public ObserverController _observerController { get; set; }
+        public IObserverController _observerController { get; set; }
 
-        public GameCreateFacade(AppDbContext context, IHubContext<GameHub> hubContext, ObserverController observerController, GameService _gameService)
+        public GameCreateFacade(AppDbContext context, IHubContext<GameHub> hubContext, IObserverController observerController, IGameService _gameService)
         {
             appDbContext = context;
             _hubContext = hubContext;

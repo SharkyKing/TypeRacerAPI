@@ -14,16 +14,17 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using System;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.Services.Interface;
+using TypeRacerAPI.DesignPatterns.Observer.Interface;
 
 public class GameTimerService: IGameTimerService
 {
     #region PROPERTIES
-    private readonly ObserverController _observerController;
+    private readonly IObserverController _observerController;
     private readonly IGameService _gameService;
 
     #endregion
 
-    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
+    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, IObserverController observerController)
     {
         _observerController = observerController;
         _gameService = gameService;
