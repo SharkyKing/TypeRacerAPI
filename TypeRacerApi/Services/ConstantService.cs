@@ -11,7 +11,7 @@ namespace TypeRacerAPI.Services
         public static bool IsDevelopment = true;
 
         #region TEST CONSTANTS
-        public static int GameCountdownSecondsTest = 60;
+        public static int GameCountdownSecondsTest = 5;
         public static string TestWords = "test test test";
         #endregion
 

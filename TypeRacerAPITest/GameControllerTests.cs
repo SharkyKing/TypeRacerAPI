@@ -416,6 +416,28 @@ namespace TypeRacerAPITest
         }
 
         [Fact]
+        public void GetWordStyles_WithEmptyStyles_ReturnsEmptyList()
+        {
+            // Arrange
+            var emptyStyles = new List<WordsStyleClass>();
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(emptyStyles);
+
+            // Mock database to return null to trigger fallback to GameService
+            var database = new DatabaseReceiver();
+            database._results = null;
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.Empty(decoratedWords);
+        }
+
+        [Fact]
         public void GetPlayerGameResults_ReturnsAllResults()
         {
             // Arrange
