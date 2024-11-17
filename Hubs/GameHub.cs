@@ -1,18 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using TypeRacerAPI.Data;
+using TypeRacerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Services;
 using System.Timers;
-using TypeRacerAPI.BaseClasses;
-using TypeRacerAPI.DesignPatterns.Singleton.GameService;
-using TypeRacerAPI.DesignPatterns.Facade.Interface;
-using TypeRacerAPI.DesignPatterns.Facade;
-using TypeRacerAPI.DesignPatterns.Observer;
-using static TypeRacerAPI.EnumClass;
-using TypeRacerAPI.DesignPatterns.Bridge;
-using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
-using static TypeRacerAPI.Services.UserInputService;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -21,93 +13,151 @@ namespace TypeRacerAPI.Hubs
         private readonly AppDbContext _context;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly GameTimerService _gameTimerService;
-        private readonly GameService _gameService;
-        private readonly ObserverController _observerController;
-        private readonly IServiceProvider _serviceProvider;
 
-        public GameHub(
-            AppDbContext context,
-            IHubContext<GameHub> hubContext,
-            GameTimerService gameTimerService,
-            GameService gameService,
-            ObserverController observerController,
-            IServiceProvider serviceProvider)
+        public GameHub(AppDbContext context, IHubContext<GameHub> hubContext, GameTimerService gameTimerService)
         {
             _context = context;
             _hubContext = hubContext;
             _gameTimerService = gameTimerService;
-            _gameService = gameService;
-            _observerController = observerController;
-            _serviceProvider = serviceProvider;
         }
 
-        public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel, string connectionGUID)
+        public async Task CreateGame(string nickName)
         {
-            IGameFacade gameCreateFacade = new GameCreateFacade(_context, _hubContext, _observerController, _gameService);
+            GameService gameService = new GameService(_context);
+            Game game = await gameService.CreateGame("TESTINIS TEKSTAS SU ŽODŽIAIS", nickName, Context.ConnectionId);
 
-            GameClass game = await gameCreateFacade.Execute(nickName, connectionGUID, activeGameType, activeGameLevel, 0);
-
-            if (game != null)
-            {
-                await AddMeToGroup(game.Id.ToString());
-
-                GameObserver gameObserver = new GameObserver();
-                gameObserver.SetGameId(game.Id);
-
-                _observerController.Attach(gameObserver);
-                await gameObserver.Update(_serviceProvider);
-            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
+            await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
         }
-        public async Task JoinGame(string gameId, string nickName, string connectionGUID)
+
+        public async Task JoinGame(string gameId,string nickName)
         {
-            IGameFacade gameJoinFacade = new GameJoinFacade(_context, _hubContext, _observerController, _gameService);
+            GameService gameService = new GameService(_context);
+            Game game = await gameService.JoinGame(int.Parse(gameId), nickName, Context.ConnectionId);
 
-            GameClass game = await gameJoinFacade.Execute(nickName, connectionGUID, 0, 0, int.Parse(gameId));
-
-            if (game != null)
-            {
-                await AddMeToGroup(game.Id.ToString());
-                await _observerController.Notify(_serviceProvider);
-            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, game.Id.ToString());
+            await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
         }
+
         public async Task StartTimer(int playerId, int gameId)
         {
-            var game = await _gameService.GetGame(gameId);
-
-            if (game != null)
+            try
             {
-                var player = await _gameService.GetPlayer(playerId);
-                if (player != null && player.IsPartyLeader)
+                int countDown = 5;
+
+                var game = await _context.Games
+                    .Include(g => g.Players)
+                    .FirstOrDefaultAsync(g => g.Id == gameId);
+
+                if (game == null)
                 {
-                    _ = _gameTimerService.StartInitiatingGame(game, _serviceProvider);
+                    return;
+                }
+
+                var player = game.Players.FirstOrDefault(p => p.Id == playerId);
+                if (player == null)
+                {
+                    return;
+                }
+
+                if (player.IsPartyLeader)
+                {
+                    await CountdownTimer(gameId, countDown);
                 }
             }
-        }
-        public async Task UserInput(string userInput, int gameId, int playerId)
-        {
-            UserInputServiceCheckResult userInputServiceCheckResult = await UserInputService.CheckUserInput(playerId, gameId, userInput, _serviceProvider);
-
-            if (userInputServiceCheckResult.powerUsed)
+            catch (Exception ex)
             {
-                _ = _gameTimerService.PowerCoolDownTimer(playerId, Context.ConnectionId, _serviceProvider);
+                Console.WriteLine("Error handling timer event: " + ex.Message);
+            }
+        }
+
+        private async Task CountdownTimer(int gameId, int countDown)
+        {
+            while (countDown >= 0)
+            {
+                await Clients.Group(gameId.ToString()).SendAsync("timerClient", new { countDown, msg = "Starting game" });
+                await Task.Delay(1000); 
+                countDown--;
             }
 
-            _ = _observerController.Notify(_serviceProvider);
+            var game = await _context.Games.FindAsync(gameId);
+            if (game != null)
+            {
+                game.IsOpen = false;
+                await _context.SaveChangesAsync();
+
+                await Clients.Group(game.Id.ToString()).SendAsync("UpdateGame", game);
+                await StartGameClock(gameId);
+            }
         }
-        public async Task StartPowerCooldown(int id)
+
+        private async Task StartGameClock(int gameId)
         {
-            _ = _gameTimerService.PowerCoolDownTimer(id, Context.ConnectionId, _serviceProvider);
+            _gameTimerService.StartGameTimer(gameId, _hubContext);
         }
+
+        public async Task UserInput(string userInput, int gameId)
+        {
+            try
+            {
+                var game = await _context.Games
+                    .Include(g => g.Players)
+                    .FirstOrDefaultAsync(g => g.Id == gameId);
+
+                if (game != null && !game.IsOpen && !game.IsOver)
+                {
+                    var player = game.Players.FirstOrDefault(p => p.SocketID == Context.ConnectionId);
+
+                    if (player != null)
+                    {
+                        var words = game.Words.Split(" ");
+                        string word = words[player.CurrentWordIndex];
+
+                        if (word == userInput)
+                        {
+                            player.CurrentWordIndex++;
+
+                            if (player.CurrentWordIndex < words.Length)
+                            {
+                                await _context.SaveChangesAsync();
+                                await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
+                            }
+                            else
+                            {
+                                DateTime endTime = DateTime.UtcNow; 
+                                DateTime startTime = new DateTime(game.StartTime * TimeSpan.TicksPerSecond, DateTimeKind.Utc);
+                                player.WPM = CalculateWPM(endTime, startTime, player);
+
+                                await _context.SaveChangesAsync();
+                                await Clients.Group(gameId.ToString()).SendAsync("UpdateGame", game);
+                                await Clients.Group(gameId.ToString()).SendAsync("done", new { game, playerWon = player });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error handling user input: " + ex.Message);
+            }
+        }
+
+        private string CalculateTime(int seconds)
+        {
+            var minutes = seconds / 60;
+            var remainingSeconds = seconds % 60;
+            return $"{minutes:D2}:{remainingSeconds:D2}"; 
+        }
+
+        private int CalculateWPM(DateTime endTime, DateTime startTime, Player player)
+        {
+            var totalTimeInMinutes = (endTime - startTime).TotalMinutes;
+            var wordsTyped = player.CurrentWordIndex; 
+            return (int)(wordsTyped / totalTimeInMinutes);
+        }
+
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            var playerDisconnecting = await _gameService.GetPlayerByConnectionGUID(Context.ConnectionId);
-
-            if (playerDisconnecting != null)
-            {
-                await _gameService.RemovePlayer(playerDisconnecting.Id);
-                _ = _observerController.Notify(_serviceProvider);
-            }
-
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -116,18 +166,9 @@ namespace TypeRacerAPI.Hubs
             string connectionId = Context.ConnectionId;
             Console.WriteLine($"Client connected with ID: {connectionId}");
 
-            await Clients.Caller.SendAsync(ConstantService.HubCalls[HubCall.ReceiveConnectionId], connectionId);
+            await Clients.Caller.SendAsync("ReceiveConnectionId", connectionId);
 
             await base.OnConnectedAsync();
-        }
-        public async ValueTask AddMeToGroup(string groupId)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupId);
-        }
-        public async Task SendMessage(int gameId, int playerId, string inputValue)
-        {
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, playerId);
-            await messageSystemBridge.SendMessageToGame(inputValue);
         }
     }
 }
