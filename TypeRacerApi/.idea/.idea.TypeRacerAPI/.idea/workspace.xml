@@ -9,8 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="07f7cdb5-7e15-4961-bc5c-aee717f2218d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Controllers/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/GameController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +78,7 @@
       <workItem from="1731852428273" duration="3830000" />
       <workItem from="1731856435328" duration="497000" />
       <workItem from="1731856957396" duration="2590000" />
-      <workItem from="1731859890938" duration="2216000" />
+      <workItem from="1731859890938" duration="2519000" />
     </task>
     <servers />
   </component>

@@ -388,7 +388,7 @@ namespace TypeRacerAPITest
                     StyleName = "Style1",
                     fontFamily = "Arial",
                     fontWeight = "bold",
-                    fontStyle = "italic"
+                    fontStyle = "italic"    // This one will be added because fontStyle is not empty
                 },
                 new WordsStyleClass 
                 { 
@@ -396,7 +396,7 @@ namespace TypeRacerAPITest
                     StyleName = "Style2",
                     fontFamily = "Times New Roman",
                     fontWeight = "normal",
-                    fontStyle = "normal"
+                    fontStyle = null        // This one won't be added because fontStyle is null
                 }
             };
 
@@ -411,8 +411,8 @@ namespace TypeRacerAPITest
             var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
             Assert.NotEmpty(decoratedWords);
-            Assert.Contains(decoratedWords, w => w.Contains("font-weight:bold"));
-            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal"));
+            Assert.Single(decoratedWords);  // Only one item should be in the collection
+            Assert.Contains(decoratedWords, w => w.Contains("font-weight:bold")); // Only check for the one that should be included
         }
 
         [Fact]
@@ -422,6 +422,10 @@ namespace TypeRacerAPITest
             var emptyStyles = new List<WordsStyleClass>();
             _mockGameService.Setup(s => s.WordStyles)
                 .Returns(emptyStyles);
+
+            // Mock database to return null to trigger fallback to GameService
+            var database = new DatabaseReceiver();
+            database._results = null;
 
             // Act
             var result = _controller.GetWordStyles();
