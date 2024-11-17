@@ -20,7 +20,7 @@ namespace TypeRacerAPI.Hubs
         private readonly AppDbContext _context;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly IGameTimerService _gameTimerService;
-        private readonly GameService _gameService;
+        private readonly IGameService _gameService;
         private readonly IObserverController _observerController;
         private readonly IServiceProvider _serviceProvider;
 
@@ -28,7 +28,7 @@ namespace TypeRacerAPI.Hubs
             AppDbContext context,
             IHubContext<GameHub> hubContext,
             IGameTimerService gameTimerService,
-            GameService gameService,
+            IGameService gameService,
             IObserverController observerController,
             IServiceProvider serviceProvider)
         {

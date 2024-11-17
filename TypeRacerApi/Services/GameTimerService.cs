@@ -19,20 +19,13 @@ using TypeRacerAPI.DesignPatterns.Observer.Interface;
 public class GameTimerService: IGameTimerService
 {
     #region PROPERTIES
-    private readonly ObserverController _observerController;
     private readonly IGameService _gameService;
-	private readonly IObserverController _observerController2;
+	private readonly IObserverController _observerController;
 
     #endregion
-
-	public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
-    {
-        _observerController = observerController;
-        _gameService = gameService;
-	}
 	public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, IObserverController observerController)
 	{
-		_observerController2 = observerController;
+		_observerController = observerController;
 		_gameService = gameService;
 	}
 	#region GAME TIME CONTROL

@@ -13,6 +13,7 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.DesignPatterns.Observer.Interface;
+using TypeRacerAPI.Services.Interface;
 
 public class Startup
 {
@@ -61,7 +62,7 @@ public class Startup
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddScoped<GameTimerService>();
+        services.AddScoped<IGameTimerService, GameTimerService>();
 
         services.AddSingleton<IObserverController, ObserverController>(provider =>
         {
