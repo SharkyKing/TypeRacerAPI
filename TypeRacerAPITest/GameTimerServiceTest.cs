@@ -46,7 +46,7 @@ namespace TypeRacerAPITest
 		{
 			// Arrange
 			var options = new DbContextOptionsBuilder<AppDbContext>()
-				.UseInMemoryDatabase(databaseName: "TestDatabase")
+				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
 				.Options;
 
 			await using var dbContext = new AppDbContext(options);
