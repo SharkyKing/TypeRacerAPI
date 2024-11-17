@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
 using TypeRacerAPI.Data;
-using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.Services;
-using System.Timers;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using TypeRacerAPI.DesignPatterns.Facade.Interface;

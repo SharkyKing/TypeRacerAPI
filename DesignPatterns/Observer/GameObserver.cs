@@ -11,7 +11,7 @@ namespace TypeRacerAPI.DesignPatterns.Observer
 {
     public class GameObserver : IObserver
     {
-        public int gameId;
+        private int gameId;
 
         public bool isExpired { get; set; }
 
