@@ -68,7 +68,7 @@ public class Startup
             return ObserverController.GetInstance(serviceProvider);
         });
 
-        services.AddSingleton<GameService>(provider =>
+        services.AddSingleton<IGameService, GameService>(provider =>
         {
             var serviceProvider = provider;
             return GameService.GetInstance(serviceProvider);

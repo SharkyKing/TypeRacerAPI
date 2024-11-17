@@ -19,11 +19,11 @@ public class GameTimerService: IGameTimerService
 {
     #region PROPERTIES
     private readonly ObserverController _observerController;
-    private readonly GameService _gameService;
+    private readonly IGameService _gameService;
 
     #endregion
 
-    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, GameService gameService, ObserverController observerController)
+    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
     {
         _observerController = observerController;
         _gameService = gameService;

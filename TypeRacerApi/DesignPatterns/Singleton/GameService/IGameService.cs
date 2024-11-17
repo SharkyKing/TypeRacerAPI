@@ -11,7 +11,6 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         List<PlayerPowerClass> Powers { get; }
         List<WordsStyleClass> WordStyles { get; }
         List<PlayerGameResultTypeClass> PlayerGameResults { get; }
-        
         Task<GameClass?> GetGame(int gameId);
         ValueTask AddGameAsync(GameClass game);
         ValueTask AddPlayerAsync(GameClass game, PlayerClass player);
