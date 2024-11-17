@@ -8,33 +8,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07f7cdb5-7e15-4961-bc5c-aee717f2218d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../TypeRacerAPITest/DependencyMocks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/DependencyMocks.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameHubTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameHubTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/TypeRacerAPITest.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/TypeRacerAPITest.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/Newtonsoft.Json.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/Newtonsoft.Json.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.deps.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.runtimeconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/bin/Debug/net8.0/TypeRacerAPITest.runtimeconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.csproj.FileListAbsolute.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.genruntimeconfig.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/TypeRacerAPITest.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/ref/TypeRacerAPITest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/ref/TypeRacerAPITest.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/refint/TypeRacerAPITest.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/Debug/net8.0/refint/TypeRacerAPITest.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/TypeRacerAPITest.csproj.nuget.g.targets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/obj/project.nuget.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DesignPatterns/Facade/GameCreateFacade.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DesignPatterns/Facade/GameCreateFacade.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/GameController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DesignPatterns/Singleton/GameService/GameService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DesignPatterns/Singleton/GameService/GameService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TypeRacerAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/TypeRacerAPI.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +28,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/75b9487230a349f1bc8839bc808ce065788a0/fd/b9bac35f/IHubContext`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/75b9487230a349f1bc8839bc808ce065788a0/fd/b9bac35f/IHubContext`1.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -58,19 +38,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.TypeRacerAPI.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "DesignPatternMasterTest",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.TypeRacerAPI.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DesignPatternMasterTest&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.TypeRacerAPI">
     <configuration name="TypeRacerAPI" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -100,7 +80,9 @@
       <option name="presentableId" value="Default" />
       <updated>1731842889180</updated>
       <workItem from="1731842890731" duration="2921000" />
-      <workItem from="1731852428273" duration="338000" />
+      <workItem from="1731852428273" duration="3830000" />
+      <workItem from="1731856435328" duration="497000" />
+      <workItem from="1731856957396" duration="849000" />
     </task>
     <servers />
   </component>

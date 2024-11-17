@@ -1,57 +1,60 @@
 using Moq;
-using TypeRacerAPI.BaseClasses;
-using TypeRacerAPI.DesignPatterns.Facade;
-using TypeRacerAPI.DesignPatterns.Observer;
+using Xunit;
+using TypeRacerAPI.Controllers;
+using TypeRacerAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.Hubs;
+using System.Threading.Tasks;
+using TypeRacerAPI.BaseClasses;
+using TypeRacerAPI.Data;
+using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 
 namespace TypeRacerAPITest
 {
-    public class GameHubTests
+    public class GameControllerTests
     {
-        private readonly GameHub _gameHub;
-        private readonly DependencyMocks _mocks;
+        private readonly Mock<IGameService> _mockGameService;
+        private readonly GameController _controller;
 
-        public GameHubTests()
+        public GameControllerTests()
         {
-            _mocks = new DependencyMocks();
-            _gameHub = new GameHub(
-                _mocks.AppDbContextMock.Object,
-                _mocks.HubContextMock.Object,
-                _mocks.GameTimerServiceMock.Object,
-                _mocks.GameServiceMock.Object,
-                _mocks.ObserverControllerMock.Object,
-                _mocks.ServiceProviderMock.Object
-            );
+            _mockGameService = new Mock<IGameService>();
+            _controller = new GameController(_mockGameService.Object, null, null);
         }
 
         [Fact]
-        public async Task CreateGame_ShouldCallExpectedMethods()
+        public async Task GetGame_ExistingId_ReturnsGame()
         {
             // Arrange
-            string nickName = "TestUser";
-            int activeGameType = 1;
-            int activeGameLevel = 2;
-            string connectionGUID = "test-guid";
-
-            var mockGame = new GameClass { Id = 123 };
-            var gameCreateFacadeMock = new Mock<GameCreateFacade>(
-                _mocks.AppDbContextMock.Object,
-                _mocks.HubContextMock.Object,
-                _mocks.ObserverControllerMock.Object,
-                _mocks.GameServiceMock.Object
-            );
-
-            gameCreateFacadeMock
-                .Setup(f => f.Execute(nickName, connectionGUID, activeGameType, activeGameLevel, 0))
-                .ReturnsAsync(mockGame);
+            int gameId = 1;
+            var expectedGame = new GameClass { Id = gameId };
+            _mockGameService.Setup(s => s.GetGame(gameId))
+                .ReturnsAsync(expectedGame);
 
             // Act
-            await _gameHub.CreateGame(nickName, activeGameType, activeGameLevel, connectionGUID);
+            var result = await _controller.GetGame(gameId);
 
             // Assert
-            _mocks.ObserverControllerMock.Verify(o => o.Attach(It.IsAny<GameObserver>()), Times.Once);
-            _mocks.GroupManagerMock.Verify(g => g.AddToGroupAsync(It.IsAny<string>(), "123", default), Times.Once);
+            var actionResult = Assert.IsType<ActionResult<GameClass>>(result);
+            var returnValue = Assert.IsType<GameClass>(actionResult.Value);
+            Assert.Equal(gameId, returnValue.Id);
+        }
+
+        [Fact]
+        public async Task GetGame_NonExistingId_ReturnsNotFound()
+        {
+            // Arrange
+            int gameId = 999;
+            _mockGameService.Setup(s => s.GetGame(gameId))
+                .ReturnsAsync((GameClass)null);
+
+            // Act
+            var result = await _controller.GetGame(gameId);
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<GameClass>>(result);
+            Assert.IsType<NotFoundResult>(actionResult.Result);
         }
     }
-
 }

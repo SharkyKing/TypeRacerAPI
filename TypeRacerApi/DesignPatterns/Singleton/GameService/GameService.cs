@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Controllers.ControllerHelperClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
-using TypeRacerAPI.DesignPatterns.Observer;
-using TypeRacerAPI.Hubs;
-using TypeRacerAPI.Services;
 
 namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
 {
-    public class GameService
+    public class GameService : IGameService
     {
         #region PROPERTIES
         private readonly IServiceProvider _serviceProvider;
@@ -46,6 +41,12 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
                 PlayerGameResults = context.PlayerGameResultType.ToList();
             }
         }
+        
+        public GameService(AppDbContext context)
+        {
+            _context = context;
+        }
+        
         public static GameService GetInstance(IServiceProvider serviceProvider)
         {
             if (_instance == null)
@@ -60,11 +61,13 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             }
             return _instance;
         }
+
         private AppDbContext GetContext()
         {
             var scope = _serviceProvider.CreateScope();
             return scope.ServiceProvider.GetRequiredService<AppDbContext>();
         }
+
         #region GAME DATA CONTROL
         public async Task<GameClass?> GetGame(int gameId)
         {
@@ -73,12 +76,14 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
                 .Include(g => g.Players)
                 .FirstOrDefaultAsync(g => g.Id == gameId);
         }
+
         public async ValueTask AddGameAsync(GameClass game)
         {
             using var context = GetContext();
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
         }
+
         public async ValueTask AddPlayerAsync(GameClass game, PlayerClass player)
         {
             using var context = GetContext();
@@ -88,7 +93,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             game.Players.Add(player);
             await context.SaveChangesAsync();
 
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(),_serviceProvider, game.Id, player.Id ?? 0);
+            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, game.Id, player.Id ?? 0);
             await messageSystemBridge.SendMessageToGame("Joined this game");
 
             var powers = await context.PlayerPower.ToListAsync();
@@ -104,6 +109,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             }
             await context.SaveChangesAsync();
         }
+
         public async Task<List<PlayerPowerUseRelation>> GetPlayerPowers(int playerId)
         {
             using var context = GetContext();
@@ -119,18 +125,21 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
                 })
                 .ToListAsync();
         }
+
         public async Task<PlayerClass?> GetPlayer(int playerId)
         {
             using var context = GetContext();
             return await context.Players
                 .FirstOrDefaultAsync(p => p.Id == playerId);
         }
+
         public async Task<PlayerClass?> GetPlayerByConnectionGUID(string connectionGUID)
         {
             using var context = GetContext();
             return await context.Players
                 .FirstOrDefaultAsync(p => p.ConnectionGUID == connectionGUID);
         }
+
         public async Task RemovePlayer(int? playerId)
         {
             using var context = GetContext();
