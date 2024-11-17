@@ -26,4 +26,32 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\appsettings.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1.deps.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\appsettings.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TestProject1.deps.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TestProject1.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TestProject1\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TestProject1\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\textLevels.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TypeRacerAPI.deps.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\bin\Debug\net8.0\TypeRacerAPI.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\obj\Debug\net8.0\TestProject1.sourcelink.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\textLevels.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TypeRacerAPI.deps.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\bin\Debug\net8.0\TypeRacerAPI.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\obj\Debug\net8.0\TestProject1.sourcelink.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
+  </ItemGroup>
+
 </Project>
