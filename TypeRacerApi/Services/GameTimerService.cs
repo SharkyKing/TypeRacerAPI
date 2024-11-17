@@ -53,7 +53,7 @@ public class GameTimerService: IGameTimerService
                     countDown--;
                 }
 
-                await _observerController2.Notify(_serviceProvider);
+                await _observerController.Notify(_serviceProvider);
                 _ = StartGameTimer(game.Id, _serviceProvider);
             }
         }
