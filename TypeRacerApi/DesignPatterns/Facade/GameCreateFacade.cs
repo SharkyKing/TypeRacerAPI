@@ -31,7 +31,7 @@ namespace TypeRacerAPI.DesignPatterns.Facade
             gameService = _gameService;
         }
 
-        public async ValueTask<GameClass?> Execute(string nickName, string connectionGUID, int activeGameType, int activeGameLevel, int gameId)
+        public virtual async ValueTask<GameClass?> Execute(string nickName, string connectionGUID, int activeGameType, int activeGameLevel, int gameId)
         {
             GameClass? game = new GameClass();
             PlayerClass player = new PlayerClass();

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ITWORK\\source\\repos\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj": {}
+    "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ITWORK\\source\\repos\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj": {
+    "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ITWORK\\source\\repos\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj",
+        "projectUniqueName": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj",
         "projectName": "TypeRacerAPITest",
-        "projectPath": "C:\\Users\\ITWORK\\source\\repos\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj",
-        "packagesPath": "C:\\Users\\ITWORK\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ITWORK\\source\\repos\\TypeRacerAPI\\TypeRacerAPITest\\obj\\",
+        "projectPath": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerAPITest\\TypeRacerAPITest.csproj",
+        "packagesPath": "C:\\Users\\staus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerAPITest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ITWORK\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\staus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,7 +28,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\TypeRacerAPI.csproj": {
+                "projectPath": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\TypeRacerAPI.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -79,6 +83,106 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\TypeRacerAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\TypeRacerAPI.csproj",
+        "projectName": "TypeRacerAPI",
+        "projectPath": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\TypeRacerAPI.csproj",
+        "packagesPath": "C:\\Users\\staus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\staus\\Desktop\\GitHub\\TypeRacerAPI\\TypeRacerApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\staus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
