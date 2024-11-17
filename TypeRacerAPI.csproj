@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <Content Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
@@ -29,13 +36,6 @@
     <Folder Include="DesignPatterns\Decorator\" />
     <Folder Include="DesignPatterns\Command\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Tests\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="TestProject1\obj\project.assets.json" />
-    <_ContentIncludedByDefault Remove="TestProject1\obj\project.packagespec.json" />
-    <_ContentIncludedByDefault Remove="TestProject1\obj\TestProject1.csproj.nuget.dgspec.json" />
   </ItemGroup>
 
 </Project>
