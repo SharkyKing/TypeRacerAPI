@@ -9,6 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="07f7cdb5-7e15-4961-bc5c-aee717f2218d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,19 +34,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.TypeRacerAPI.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;DesignPatternMasterTest&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.TypeRacerAPI.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "DesignPatternMasterTest",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "RiderDotCoverPageId",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.TypeRacerAPI">
     <configuration name="TypeRacerAPI" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -78,12 +80,53 @@
       <workItem from="1731852428273" duration="3830000" />
       <workItem from="1731856435328" duration="497000" />
       <workItem from="1731856957396" duration="2590000" />
-      <workItem from="1731859890938" duration="2856000" />
+      <workItem from="1731859890938" duration="6081000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnitTestsCoverage.Settings">
+    <option name="coveragePercentColumnWidth" value="150" />
+    <option name="sortOrder" value="DESCENDING" />
+    <option name="sortedColumn" value="1" />
+    <option name="symbolColumnWidth" value="282" />
+    <coverage-tree-state>
+      <expand>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Controllers 93% 6/87" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Controllers 93% 6/87" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="GameController 92% 6/79" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+      </expand>
+      <select />
+    </coverage-tree-state>
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="Vcs.Log.Tabs.Properties">
