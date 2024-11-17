@@ -423,6 +423,10 @@ namespace TypeRacerAPITest
             _mockGameService.Setup(s => s.WordStyles)
                 .Returns(emptyStyles);
 
+            // Mock database to return null to trigger fallback to GameService
+            var database = new DatabaseReceiver();
+            database._results = null;
+
             // Act
             var result = _controller.GetWordStyles();
 
