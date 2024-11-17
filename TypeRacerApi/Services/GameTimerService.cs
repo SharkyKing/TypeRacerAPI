@@ -71,7 +71,7 @@ public class GameTimerService: IGameTimerService
             game.StartTime = DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond;
             await _appDbContext.SaveChangesAsync();
 
-            int time = ConstantService.GameCountdownSeconds;
+            int time = ConstantService.IsDevelopment ? ConstantService.GameCountdownSecondsTest : ConstantService.GameCountdownSeconds;
 
             while (time >= 0)
             {
