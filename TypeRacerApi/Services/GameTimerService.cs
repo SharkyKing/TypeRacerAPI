@@ -20,16 +20,22 @@ public class GameTimerService: IGameTimerService
     #region PROPERTIES
     private readonly ObserverController _observerController;
     private readonly IGameService _gameService;
+	private readonly IObserverController _observerController2;
 
-    #endregion
+	#endregion
 
-    public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
+	public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, ObserverController observerController)
     {
         _observerController = observerController;
         _gameService = gameService;
-    }
-    #region GAME TIME CONTROL
-    public async Task StartInitiatingGame(GameClass game, IServiceProvider _serviceProvider)
+	}
+	public GameTimerService(AppDbContext context, IHubContext<GameHub> hubContext, IGameService gameService, IObserverController observerController)
+	{
+		_observerController2 = observerController;
+		_gameService = gameService;
+	}
+	#region GAME TIME CONTROL
+	public async Task StartInitiatingGame(GameClass game, IServiceProvider _serviceProvider)
     {
         int countDown = ConstantService.StartGameCountdownSeconds;
 
