@@ -18,10 +18,12 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         private readonly IServiceProvider _serviceProvider;
         private AppDbContext _context;
         #endregion
+
         #region INSTANCE CONTROL
         private static GameService? _instance;
         private static readonly object _lock = new object();
         #endregion
+
         #region DATA OBJECTS
         public List<GameTypeClass> GameTypes { get; private set; }
         public List<GameLevelClass> GameLevels { get; private set; }
@@ -29,6 +31,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         public List<WordsStyleClass> WordStyles { get; private set; }
         public List<PlayerGameResultTypeClass> PlayerGameResults { get; private set; }
         #endregion
+
         private GameService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -61,10 +64,6 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         {
             var scope = _serviceProvider.CreateScope();
             return scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        }
-        public async Task CountdownTimer(GameClass game, GameTimerService _gameTimerService, IHubContext<GameHub> _hubContext)
-        {
-            _ = _gameTimerService.StartInitiatingGame(game, _serviceProvider);
         }
         #region GAME DATA CONTROL
         public async Task<GameClass?> GetGame(int gameId)
@@ -132,7 +131,6 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             return await context.Players
                 .FirstOrDefaultAsync(p => p.ConnectionGUID == connectionGUID);
         }
-
         public async Task RemovePlayer(int? playerId)
         {
             using var context = GetContext();

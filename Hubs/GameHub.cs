@@ -79,7 +79,7 @@ namespace TypeRacerAPI.Hubs
                 var player = await _gameService.GetPlayer(playerId);
                 if (player != null && player.IsPartyLeader)
                 {
-                    await _gameService.CountdownTimer(game, _gameTimerService, _hubContext);
+                    _ = _gameTimerService.StartInitiatingGame(game, _serviceProvider);
                 }
             }
         }
