@@ -10,6 +10,8 @@
     <list default="true" id="07f7cdb5-7e15-4961-bc5c-aee717f2218d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../TypeRacerAPITest/GameControllerTests.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TypeRacerAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DesignPatterns/Command/DataBaseReceiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DesignPatterns/Command/DataBaseReceiver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TypeRacerAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/TypeRacerAPI.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +27,12 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/167b1192c3874ca198d641611db2b8cf39428/c4/6f493eb5/InMemoryTable`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/75b9487230a349f1bc8839bc808ce065788a0/fd/b9bac35f/IHubContext`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/83f3959e20d0785c3fa5d87b307c4d4db562aea7947c46644fd16367df8d/Mock.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -37,6 +44,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     ".NET Project.TypeRacerAPI.executor": "Run",
+    "7abf13c1-e27d-4ae9-b784-f86eab56210e.executor": "Debug",
+    "971cc2b5-5728-4b0f-a8b0-2cd66d2dd9f9.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "DesignPatternMasterTest",
     "node.js.detected.package.eslint": "true",
@@ -80,7 +89,8 @@
       <workItem from="1731852428273" duration="3830000" />
       <workItem from="1731856435328" duration="497000" />
       <workItem from="1731856957396" duration="2590000" />
-      <workItem from="1731859890938" duration="6081000" />
+      <workItem from="1731859890938" duration="6292000" />
+      <workItem from="1731868919668" duration="2801000" />
     </task>
     <servers />
   </component>
@@ -90,37 +100,37 @@
   <component name="UnitTestsCoverage.Settings">
     <option name="coveragePercentColumnWidth" value="150" />
     <option name="sortOrder" value="DESCENDING" />
-    <option name="sortedColumn" value="1" />
-    <option name="symbolColumnWidth" value="282" />
+    <option name="sortedColumn" value="2" />
+    <option name="symbolColumnWidth" value="372" />
     <coverage-tree-state>
       <expand>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 19% 2547/3131" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 19% 2547/3131" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 11% 2420/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 19% 2547/3131" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 11% 2420/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 12% 2239/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 19% 2547/3131" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 11% 2420/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 12% 2239/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
           <item name="Controllers 93% 6/87" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 26% 2250/3052" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2243/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
-          <item name="TypeRacerAPI 18% 2091/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 19% 2547/3131" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 11% 2420/2725" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="TypeRacerAPI 12% 2239/2544" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
           <item name="Controllers 93% 6/87" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
           <item name="GameController 92% 6/79" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>

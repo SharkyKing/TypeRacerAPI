@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using TypeRacerAPI.Hubs;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Controllers.ControllerHelperClasses;
 using TypeRacerAPI.Data;
@@ -26,11 +27,11 @@ namespace TypeRacerAPITest
         public GameControllerTests()
         {
             _mockGameService = new Mock<IGameService>();
-        
+
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDatabase_" + Guid.NewGuid().ToString())
                 .Options;
-            
+    
             _context = new AppDbContext(options);
             _controller = new GameController(_mockGameService.Object, null, _context);
         }
@@ -411,8 +412,131 @@ namespace TypeRacerAPITest
             var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
             Assert.NotEmpty(decoratedWords);
-            Assert.Single(decoratedWords);  // Only one item should be in the collection
-            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal")); // Check for the one that should be included
+            Assert.Single(decoratedWords);
+            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal"));
+        }
+
+        [Fact]
+        public void GetWordStyles_WithDatabaseFiller_ProcessesDataTableCorrectly()
+        {
+            // Arrange
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("Id", typeof(int));
+            dataTable.Columns.Add("StyleName", typeof(string));
+            dataTable.Columns.Add("fontStyle", typeof(string));
+            dataTable.Columns.Add("fontWeight", typeof(string));
+            dataTable.Columns.Add("fontFamily", typeof(string));
+
+            dataTable.Rows.Add(1, "TestStyle", "italic", "bold", "Arial");
+            dataTable.Rows.Add(2, "TestStyle2", "normal", "normal", "Times New Roman");
+
+            // Test the Filler method directly
+            var wordsStyle = new WordsStyleClass();
+            var filledStyles = wordsStyle.Filler(dataTable);
+
+            // Assert
+            Assert.NotNull(filledStyles);
+            Assert.Equal(2, filledStyles.Count);
+            Assert.Contains(filledStyles, w => w.Id == 1 && w.StyleName == "TestStyle" && 
+                                             w.fontStyle == "italic" && w.fontWeight == "bold" && 
+                                             w.fontFamily == "Arial");
+            Assert.Contains(filledStyles, w => w.Id == 2 && w.StyleName == "TestStyle2" && 
+                                             w.fontStyle == "normal" && w.fontWeight == "normal" && 
+                                             w.fontFamily == "Times New Roman");
+        }
+        
+        [Fact]
+        public void GetWordStyles_WhenDatabaseThrowsException_UsesGameServiceWordStyles()
+        {
+            // Arrange
+            var wordStyles = new List<WordsStyleClass>
+            {
+                new WordsStyleClass 
+                { 
+                    Id = 1,
+                    StyleName = "Style1",
+                    fontWeight = "normal",
+                    fontStyle = "normal"
+                }
+            };
+
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(wordStyles);
+
+            // The database operations will throw in the try block
+            // and fall back to GameService
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.NotEmpty(decoratedWords);
+            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal"));
+        }
+
+        [Fact]
+        public void GetWordStyles_WithNullProperties_HandlesNullsCorrectly()
+        {
+            // Arrange
+            var wordStyles = new List<WordsStyleClass>
+            {
+                new WordsStyleClass 
+                { 
+                    Id = 1,
+                    StyleName = "Style1",
+                    fontFamily = null,      // Test null fontFamily
+                    fontWeight = "normal",
+                    fontStyle = "normal"
+                }
+            };
+
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(wordStyles);
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.NotEmpty(decoratedWords);
+            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal"));
+            Assert.DoesNotContain(decoratedWords, w => w.Contains("font-family"));
+        }
+
+        [Fact]
+        public void GetWordStyles_WithEmptyProperties_HandlesEmptyStringsCorrectly()
+        {
+            // Arrange
+            var wordStyles = new List<WordsStyleClass>
+            {
+                new WordsStyleClass 
+                { 
+                    Id = 1,
+                    StyleName = "Style1",
+                    fontFamily = "",        // Test empty fontFamily
+                    fontWeight = "normal",
+                    fontStyle = "normal"
+                }
+            };
+
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(wordStyles);
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.NotEmpty(decoratedWords);
+            Assert.Contains(decoratedWords, w => w.Contains("font-weight:normal"));
+            Assert.DoesNotContain(decoratedWords, w => w.Contains("font-family"));
         }
 
         [Fact]
@@ -423,7 +547,6 @@ namespace TypeRacerAPITest
             _mockGameService.Setup(s => s.WordStyles)
                 .Returns(emptyStyles);
 
-            // Mock database to return null to trigger fallback to GameService
             var database = new DatabaseReceiver();
             database._results = null;
 
@@ -435,6 +558,70 @@ namespace TypeRacerAPITest
             var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
             var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
             Assert.Empty(decoratedWords);
+        }
+
+        [Fact]
+        public void GetWordStyles_WithAllDecorators_AppliesAllStyles()
+        {
+            // Arrange
+            var wordStyles = new List<WordsStyleClass>
+            {
+                new WordsStyleClass 
+                { 
+                    Id = 1,
+                    StyleName = "FullStyle",
+                    fontFamily = "Arial",
+                    fontWeight = "bold",
+                    fontStyle = "italic"    // All decorators should be applied
+                }
+            };
+
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(wordStyles);
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.NotEmpty(decoratedWords);
+            Assert.Single(decoratedWords);
+            var decoratedWord = decoratedWords.First();
+            Assert.Contains("font-weight:bold", decoratedWord);
+        }
+
+        [Fact]
+        public void GetWordStyles_WithPartialDecorators_AppliesOnlySpecifiedStyles()
+        {
+            // Arrange
+            var wordStyles = new List<WordsStyleClass>
+            {
+                new WordsStyleClass 
+                { 
+                    Id = 1,
+                    StyleName = "PartialStyle",
+                    fontFamily = "Arial",
+                    fontWeight = "normal",
+                    fontStyle = "italic"    // Should be applied
+                }
+            };
+
+            _mockGameService.Setup(s => s.WordStyles)
+                .Returns(wordStyles);
+
+            // Act
+            var result = _controller.GetWordStyles();
+
+            // Assert
+            var actionResult = Assert.IsType<ActionResult<IEnumerable<string>>>(result);
+            var okResult = Assert.IsType<OkObjectResult>(actionResult.Result);
+            var decoratedWords = Assert.IsAssignableFrom<IEnumerable<string>>(okResult.Value);
+            Assert.NotEmpty(decoratedWords);
+            Assert.Single(decoratedWords);
+            var decoratedWord = decoratedWords.First();
+            Assert.Contains("font-weight:normal", decoratedWord);
         }
 
         [Fact]

@@ -10,7 +10,7 @@ namespace TypeRacerAPI.DesignPatterns.Command
 		private readonly string _connectionString = "Server=SHARKSTOP;Database=TypeRacer;User Id=root;Password=root123;Encrypt=True;TrustServerCertificate=True;";
 		public System.Data.DataTable? _results = null;
 
-		public void Select(string table)
+		public virtual void Select(string table)
 		{
 			var dataTable = new DataTable();
 			using (var connection = new SqlConnection(_connectionString))
@@ -25,7 +25,7 @@ namespace TypeRacerAPI.DesignPatterns.Command
 			_results = dataTable;
 		}
 
-		public void Update(string table, int id, string data, string column)
+		public virtual void Update(string table, int id, string data, string column)
 		{
 			using (var connection = new SqlConnection(_connectionString))
 			{
@@ -39,7 +39,7 @@ namespace TypeRacerAPI.DesignPatterns.Command
 			}
 		}
 
-		public void Delete(int id, string table)
+		public virtual void Delete(int id, string table)
 		{
 			using (var connection = new SqlConnection(_connectionString))
 			{
