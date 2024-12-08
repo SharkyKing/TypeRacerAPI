@@ -13,6 +13,7 @@ using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using TypeRacerAPI.DesignPatterns.Observer;
 using System;
 using static TypeRacerAPI.EnumClass;
+using TypeRacerAPI.DesignPatterns.State;
 
 public class GameTimerService
 {
@@ -44,17 +45,21 @@ public class GameTimerService
                 game.IsOpen = false;
                 await _appDbContext.SaveChangesAsync();
 
-                while (countDown >= 0)
+				while (countDown >= 0)
                 {
                     await _hubContext.Clients.Group(game.Id.ToString())
                         .SendAsync(ConstantService.HubCalls[HubCall.TimerClient], new { countDown, msg = "Starting game" });
                     await Task.Delay(1000);
                     countDown--;
-                }
+				}
 
-                await _observerController.Notify(_serviceProvider);
-                _ = StartGameTimer(game.Id, _serviceProvider);
-            }
+				await _observerController.Notify(_serviceProvider);
+				game.SetState(new TimerStartedState());
+				game.HandleState();
+				_ = StartGameTimer(game.Id, _serviceProvider);
+				game.SetState(new TimerEndedState());
+				game.HandleState();
+			}
         }
     }
     public async Task StartGameTimer(int gameId, IServiceProvider _serviceProvider)

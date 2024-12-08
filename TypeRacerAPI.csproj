@@ -21,6 +21,9 @@
   <ItemGroup>
     <Folder Include="DesignPatterns\Decorator\" />
     <Folder Include="DesignPatterns\Command\" />
+    <Folder Include="DesignPatterns\Mediator\" />
+    <Folder Include="DesignPatterns\State\" />
+    <Folder Include="DesignPatterns\TemplateMethod\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
