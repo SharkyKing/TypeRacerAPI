@@ -33,6 +33,19 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 			return _instance;
 		}
 
+		public List<WordsClass> cnv(IterableCollection<WordsClass> iterableCollection)
+		{
+			List<WordsClass> wordsList = new List<WordsClass>();
+
+			IIterator<WordsClass> iterator = iterableCollection.CreateIterator();
+			while (iterator.HasNext())
+			{
+				wordsList.Add(iterator.Next());
+			}
+
+			return wordsList;
+		}
+
 		public string GetText(GameLevel level, AppDbContext _context)
 		{
 			List<WordsClass> selectedList;
@@ -71,12 +84,13 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 			}
 		}
 
-		public IterableCollection<WordsClass> LoadTextsFromJson()
+		public List<WordsClass> LoadTextsFromJson()
 		{
 			var texts = ReadJsonFile(filePath);
 			if (texts == null) throw new InvalidOperationException("Failed to load texts.");
 
 			IterableCollection<WordsClass> wordsBaseEntries = new IterableCollection<WordsClass>();
+			List<WordsClass> words = new List<WordsClass>();
 
 			foreach (var text in texts.Begginner)
 			{
@@ -101,8 +115,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 				var word = iterator.Next();
 				word.Id = id++;
 			}
-
-			return wordsBaseEntries;
+			return cnv(wordsBaseEntries);
 		}
 	}
 }

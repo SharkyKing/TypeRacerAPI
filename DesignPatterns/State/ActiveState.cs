@@ -18,5 +18,5 @@ namespace TypeRacerAPI.DesignPatterns.State
                 game.IsOver = false;
             }
         }
-    }
+	}
 }

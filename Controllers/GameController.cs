@@ -85,11 +85,11 @@ namespace TypeRacerAPI.Controllers
         {
             return Ok(_gameService.Powers);
         }
-        [HttpGet("wordStyles")]
+		[HttpGet("wordStyles")]
 		public ActionResult<IEnumerable<string>> GetWordStyles()
 		{
 			var decoratedWords = new List<string>();
-            IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
+			IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
 			var database = new DatabaseReceiver();
 			try
 			{
@@ -101,41 +101,71 @@ namespace TypeRacerAPI.Controllers
 
 				var deleteCommand = new DeleteCommand(database, 0, "WordsStyle");
 				var updateCommand = new UpdateCommand(database, "WordsStyle", 0, "test", "");
-                invoker.AddCommand(deleteCommand);
+				invoker.AddCommand(deleteCommand);
 				invoker.AddCommand(updateCommand);
 				//invoker.ExecuteCommands();
 			}
-            catch
-            {
-
-            }
-
-			foreach (var wordStyle in (database._results == null ? _gameService.WordStyles : wordsStyleClasses))
+			catch
 			{
-				var word = new WordStyleDecorator(wordStyle.StyleName);
+			}
 
-				if (!string.IsNullOrEmpty(wordStyle.fontFamily))
+			if (database._results != null)
+			{
+				var iterator = wordsStyleClasses.CreateIterator();
+				while (iterator.HasNext())
 				{
-					word = new FontFamilyDecorator(word, wordStyle.fontFamily);
-				}
+					var wordStyle = iterator.Next();
+					var word = new WordStyleDecorator(wordStyle.StyleName);
 
-				if (!string.IsNullOrEmpty(wordStyle.fontWeight))
+					if (!string.IsNullOrEmpty(wordStyle.fontFamily))
+					{
+						word = new FontFamilyDecorator(word, wordStyle.fontFamily);
+					}
+
+					if (!string.IsNullOrEmpty(wordStyle.fontWeight))
+					{
+						word = new FontWeightDecorator(word, wordStyle.fontWeight);
+					}
+
+					if (!string.IsNullOrEmpty(wordStyle.fontStyle))
+					{
+						word = new FontStyleDecorator(word, wordStyle.fontStyle);
+					}
+
+					decoratedWords.Add(word.GetStyledText());
+				}
+			}
+			else
+			{
+				foreach (var wordStyle in _gameService.WordStyles)
 				{
-					word = new FontWeightDecorator(word, wordStyle.fontWeight);
-				}
+					var word = new WordStyleDecorator(wordStyle.StyleName);
 
-				if (!string.IsNullOrEmpty(wordStyle.fontStyle))
-				{
-					word = new FontStyleDecorator(word, wordStyle.fontStyle);
-				}
+					if (!string.IsNullOrEmpty(wordStyle.fontFamily))
+					{
+						word = new FontFamilyDecorator(word, wordStyle.fontFamily);
+					}
 
-				decoratedWords.Add(word.GetStyledText());
+					if (!string.IsNullOrEmpty(wordStyle.fontWeight))
+					{
+						word = new FontWeightDecorator(word, wordStyle.fontWeight);
+					}
+
+					if (!string.IsNullOrEmpty(wordStyle.fontStyle))
+					{
+						word = new FontStyleDecorator(word, wordStyle.fontStyle);
+					}
+
+					decoratedWords.Add(word.GetStyledText());
+				}
 			}
 
 			return Ok(decoratedWords);
 		}
 
-        [HttpGet("playerGameResults")]
+
+
+		[HttpGet("playerGameResults")]
         public ActionResult<IEnumerable<PlayerPowerClass>> GetPlayerGameResults()
         {
             return Ok(_gameService.PlayerGameResults);
