@@ -1,20 +1,23 @@
 ﻿using System.Data;
 using System.Text.Json.Serialization;
+using TypeRacerAPI.DesignPatterns.Iterator; // For IterableCollection and IIterator
 
 namespace TypeRacerAPI.BaseClasses
 {
-    public class WordsStyleClass
-    {
-        public int Id { get; set; }
-        public string StyleName { get; set; }
-        public string? fontStyle { get; set; }
-        public string? fontWeight { get; set; }
-        public string? fontFamily { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<PlayerClass> Players { get; set; }
+	public class WordsStyleClass
+	{
+		public int Id { get; set; }
+		public string StyleName { get; set; }
+		public string? fontStyle { get; set; }
+		public string? fontWeight { get; set; }
+		public string? fontFamily { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<PlayerClass> Players { get; set; }
 
-        public List<WordsStyleClass> Filler(DataTable table) {
-            List<WordsStyleClass> wordsStyleClasses = new List<WordsStyleClass>();
+		public IterableCollection<WordsStyleClass> Filler(DataTable table)
+		{
+			IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
+
 			foreach (DataRow row in table.Rows)
 			{
 				WordsStyleClass wordStyle = new WordsStyleClass
@@ -30,5 +33,5 @@ namespace TypeRacerAPI.BaseClasses
 			}
 			return wordsStyleClasses;
 		}
-    }
+	}
 }
