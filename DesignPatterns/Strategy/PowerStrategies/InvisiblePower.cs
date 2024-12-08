@@ -14,6 +14,8 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
     public class InvisiblePower : IPowerStrategy
     {
         public string powerType { get; set; } = "I";
+        public int? playerId { get; set; } = 0;
+        public int? victimId { get; set; } = 0;
         public async ValueTask Attack(int? playerId, int? victimId, IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())

@@ -7,6 +7,7 @@ using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.Hubs;
 using static TypeRacerAPI.EnumClass;
+using TypeRacerAPI.DesignPatterns.Chain;
 
 namespace TypeRacerAPI.Services
 {
@@ -74,32 +75,41 @@ namespace TypeRacerAPI.Services
 
                                     await _appDbContext.SaveChangesAsync();
 
-                                    List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
+                                    IEndGameHandler handler1 = new CheckAllPlayersFinishedHandler();
+                                    IEndGameHandler handler2 = new DetermineWinnerHandler();
+                                    IEndGameHandler handler3 = new SendGameOverMessageHandler();
 
-                                    bool allFinished = true;
-                                    PlayerClass playerWithLeastMistakes = null;
-                                    int leastMistakes = int.MinValue;
+                                    handler1.SetNextHandler(handler2);
+                                    handler2.SetNextHandler(handler3);
 
-                                    foreach (PlayerClass playerUnit in players)
-                                    {
-                                        if (!player.Finished)
-                                        {
-                                            allFinished = false;
-                                            break;
-                                        }
+                                    await handler1.HandleEndGameAsync(game, player, serviceProvider, _hubContext);
 
-                                        if (playerUnit.MistakeCount > leastMistakes && playerUnit.Finished)
-                                        {
-                                            playerWithLeastMistakes = playerUnit;
-                                        }
-                                    }
+                                    //List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
 
-                                    if (allFinished)
-                                    {
-                                        game.IsOver = true;
-                                        await _appDbContext.SaveChangesAsync();
-                                        await _hubContext.Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = playerWithLeastMistakes });
-                                    }
+                                    //bool allFinished = true;
+                                    //PlayerClass playerWithLeastMistakes = null;
+                                    //int leastMistakes = int.MinValue;
+
+                                    //foreach (PlayerClass playerUnit in players)
+                                    //{
+                                    //    if (!player.Finished)
+                                    //    {
+                                    //        allFinished = false;
+                                    //        break;
+                                    //    }
+
+                                    //    if (playerUnit.MistakeCount > leastMistakes && playerUnit.Finished)
+                                    //    {
+                                    //        playerWithLeastMistakes = playerUnit;
+                                    //    }
+                                    //}
+
+                                    //if (allFinished)
+                                    //{
+                                    //    game.IsOver = true;
+                                    //    await _appDbContext.SaveChangesAsync();
+                                    //    await _hubContext.Clients.Group(gameId.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = playerWithLeastMistakes });
+                                    //}
 
                                 }
                                 else

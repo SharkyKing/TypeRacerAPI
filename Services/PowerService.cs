@@ -4,9 +4,11 @@ using System.Text.RegularExpressions;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Interpretator;
 using TypeRacerAPI.DesignPatterns.Strategy;
 using TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies;
+using TypeRacerAPI.DesignPatterns.Visitor;
 using TypeRacerAPI.Hubs;
 
 namespace TypeRacerAPI.Services
@@ -51,6 +53,17 @@ namespace TypeRacerAPI.Services
                         return false; 
                 }
 
+                var visitor = new EntityLoggingVisitor(new LogGame(), serviceProvider);
+
+                try
+                {
+
+                    (powerController.powerStrategy as IEntity).Accept(visitor);
+                }
+                catch (Exception ex)
+                {
+
+                }
                 await powerController.Execute();
 
                 return true;

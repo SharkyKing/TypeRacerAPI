@@ -7,17 +7,29 @@ using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Strategy.Interface;
+using TypeRacerAPI.DesignPatterns.Visitor;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
 using static TypeRacerAPI.EnumClass;
 
 namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
 {
-    public class FreezePower : IPowerStrategy
+    public class FreezePower : IPowerStrategy, IEntity
     {
         public string powerType { get; set; } = "F";
+        public int? playerId { get; set; } = 0;
+        public int? victimId { get; set; } = 0;
+
+        public void Accept(IEntityVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         public async ValueTask Attack(int? playerId, int? victimId, IServiceProvider serviceProvider)
         {
+            this.playerId = playerId;
+            this.victimId = victimId;
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
