@@ -14,8 +14,13 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
     public class RewindPower : IPowerStrategy
     {
         public string powerType { get; set; } = "R";
+        public int? playerId { get; set; } = 0;
+        public int? victimId { get; set; } = 0;
         public async ValueTask Attack(int? playerId, int? victimId, IServiceProvider serviceProvider)
         {
+            this.playerId = playerId;
+            this.victimId = victimId;
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

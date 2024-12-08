@@ -5,11 +5,13 @@ using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.AbstractFactory.Game;
 using TypeRacerAPI.DesignPatterns.AbstractFactory.Game.Enum;
 using TypeRacerAPI.DesignPatterns.AbstractFactory.Game.Interface;
+using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using TypeRacerAPI.DesignPatterns.Facade.Interface;
 using TypeRacerAPI.DesignPatterns.Factory.Player;
 using TypeRacerAPI.DesignPatterns.Factory.Player.Enum;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
+using TypeRacerAPI.DesignPatterns.Visitor;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
 

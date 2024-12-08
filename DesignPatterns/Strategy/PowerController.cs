@@ -4,7 +4,7 @@ namespace TypeRacerAPI.DesignPatterns.Strategy
 {
     public class PowerController
     {
-        IPowerStrategy powerStrategy;
+        public IPowerStrategy powerStrategy;
         IServiceProvider serviceProvider;
         int? playerId;
         int? victimId;
