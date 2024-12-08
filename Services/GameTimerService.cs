@@ -14,6 +14,7 @@ using TypeRacerAPI.DesignPatterns.Observer;
 using System;
 using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.State;
+using TypeRacerAPI.DesignPatterns.Iterator;
 
 public class GameTimerService
 {
@@ -102,70 +103,74 @@ public class GameTimerService
             await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
         }
     }
-    #endregion
+	#endregion
 
-    #region PLAYER TIME CONTROL
-    public async Task PowerCoolDownTimer(int? playerId, string connectionId, IServiceProvider _serviceProvider)
-    {
-        using (var scope = _serviceProvider.CreateScope())
-        {
-            var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
+	#region PLAYER TIME CONTROL
+	public async Task PowerCoolDownTimer(int? playerId, string connectionId, IServiceProvider _serviceProvider)
+	{
+		using (var scope = _serviceProvider.CreateScope())
+		{
+			var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+			var _hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<GameHub>>();
 
-            bool allTimersFinished = false;
+			var playerPowers = _appDbContext.PlayerPowerUses
+				.Where(ppu => ppu.PlayerId == playerId && !ppu.IsUsed && !ppu.IsOnCooldown)
+				.ToList();
 
-            var playerPowers = _appDbContext.PlayerPowerUses.Where(ppu => ppu.PlayerId == playerId && ppu.IsUsed == false && ppu.IsOnCooldown == false).ToList();
+			var cooldownCollection = new IterableCollection<KeyValuePair<PlayerPowerUseClass, int>>();
 
-            Dictionary<PlayerPowerUseClass, int> playerPowerUseCoolDownLeft = new Dictionary<PlayerPowerUseClass, int>();
+			foreach (var usePower in playerPowers)
+			{
+				var powerBase = _gameService.Powers.FirstOrDefault(ppb => ppb.Id == usePower.PlayerPowerId);
+				if (powerBase != null)
+				{
+					cooldownCollection.Add(new KeyValuePair<PlayerPowerUseClass, int>(usePower, powerBase.CooldownTime));
+					usePower.IsOnCooldown = true;
+				}
+			}
 
-            foreach (PlayerPowerUseClass usePower in playerPowers)
-            {
-                var powerBase = _gameService.Powers.Where(ppb => ppb.Id == usePower.PlayerPowerId).FirstOrDefault();
-                int time = powerBase.CooldownTime;
+			await _appDbContext.SaveChangesAsync();
 
-                if (!playerPowerUseCoolDownLeft.ContainsKey(usePower))
-                {
-                    playerPowerUseCoolDownLeft.Add(usePower, time);
-                    usePower.IsOnCooldown = true;
-                }
-            }
+			while (true)
+			{
+				bool stillLeftTimers = false;
 
-            await _appDbContext.SaveChangesAsync();
+				var player = await _appDbContext.Players.AsNoTracking().SingleOrDefaultAsync(p => p.Id == playerId);
+				if (player == null || !player.IsConnected) return;
 
-            while (!allTimersFinished)
-            {
-                bool stillLeftTimers = false;
-                PlayerClass player = await _appDbContext.Players
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(player => player.Id == playerId);
-                if (!player.IsConnected) return;
-                foreach (KeyValuePair<PlayerPowerUseClass, int> pair in playerPowerUseCoolDownLeft)
-                {
-                    if (pair.Value >= 0)
-                    {
-                        stillLeftTimers = true;
-                        int timeCurrent = playerPowerUseCoolDownLeft[pair.Key];
+				var iterator = cooldownCollection.CreateIterator();
+				while (iterator.HasNext())
+				{
+					var pair = iterator.Next();
+					if (pair.Value >= 0)
+					{
+						stillLeftTimers = true;
 
-                        await _hubContext
-                            .Clients
-                            .Client(connectionId)
-                            .SendAsync(ConstantService.HubCalls[HubCall.CooldownTimer],
-                                new { powerUseId = pair.Key.Id, time = timeCurrent }
-                            );
+						await _hubContext.Clients.Client(connectionId).SendAsync(
+							ConstantService.HubCalls[HubCall.CooldownTimer],
+							new { powerUseId = pair.Key.Id, time = pair.Value }
+						);
 
-                        playerPowerUseCoolDownLeft[pair.Key] = pair.Value - 1;
-                    }
-                    else
-                    {
-                        pair.Key.IsOnCooldown = false;
-                        await _appDbContext.SaveChangesAsync();
-                    }
-                }
+						// Update the collection by removing and re-adding the item with updated time.
+						cooldownCollection.Remove(pair);
+						cooldownCollection.Add(new KeyValuePair<PlayerPowerUseClass, int>(pair.Key, pair.Value - 1));
+					}
+					else
+					{
+						pair.Key.IsOnCooldown = false;
+						await _appDbContext.SaveChangesAsync();
 
-                await Task.Delay(1000);
-                allTimersFinished = !stillLeftTimers;
-            }
-        }
-    }
-    #endregion
+						// Remove the cooldown entry for completed timers.
+						cooldownCollection.Remove(pair);
+					}
+				}
+
+				if (!stillLeftTimers) break;
+
+				await Task.Delay(1000);
+			}
+		}
+	}
+
+	#endregion
 }

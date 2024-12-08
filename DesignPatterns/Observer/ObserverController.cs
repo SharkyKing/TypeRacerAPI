@@ -4,64 +4,71 @@ using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Observer.Interface;
 using TypeRacerAPI.Hubs;
 using System.Collections.Generic;
+using TypeRacerAPI.DesignPatterns.Iterator;
 
 namespace TypeRacerAPI.DesignPatterns.Observer
 {
-    public class ObserverController
-    {
-        private static ObserverController _instance;
-        private static readonly object _lock = new object();
-        private IServiceProvider _serviceProvider;
-        private List<IObserver> observers = new List<IObserver>();
+	public class ObserverController
+	{
+		private static ObserverController _instance;
+		private static readonly object _lock = new object();
+		private IServiceProvider _serviceProvider;
+		private IterableCollection<IObserver> observers = new IterableCollection<IObserver>();
 
-        private ObserverController() { }
+		private ObserverController() { }
 
-        public static ObserverController GetInstance(IServiceProvider serviceProvider)
-        {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new ObserverController();
-                        _instance._serviceProvider = serviceProvider;
-                    }
-                }
-            }
-            else
-            {
-                _instance._serviceProvider = serviceProvider;
-            }
+		public static ObserverController GetInstance(IServiceProvider serviceProvider)
+		{
+			if (_instance == null)
+			{
+				lock (_lock)
+				{
+					if (_instance == null)
+					{
+						_instance = new ObserverController();
+						_instance._serviceProvider = serviceProvider;
+					}
+				}
+			}
+			else
+			{
+				_instance._serviceProvider = serviceProvider;
+			}
 
-            return _instance;
-        }
+			return _instance;
+		}
 
-        public void Attach(IObserver observer) => observers.Add(observer);
+		public void Attach(IObserver observer) => observers.Add(observer);
 
-        public async ValueTask Notify(IServiceProvider serviceProvider)
-        {
-            List<IObserver> observersTemp = new List<IObserver>();
+		public async ValueTask Notify(IServiceProvider serviceProvider)
+		{
+			IterableCollection<IObserver> observersTemp = new IterableCollection<IObserver>();
+			IIterator<IObserver> iterator = observers.CreateIterator();
 
-            foreach(IObserver observer in observers)
-            {
-                observersTemp.Add(observer);
-            }
+			while (iterator.HasNext())
+			{
+				observersTemp.Add(iterator.Next());
+			}
 
-            foreach (var observer in observers)
-            {
-                _ = observer.Update(serviceProvider);
+			iterator = observers.CreateIterator();
 
-                if (observer.isExpired)
-                {
-                    observersTemp.Remove(observer);
-                }
-            }
-            observers.Clear();
-            foreach (IObserver observer in observersTemp)
-            {
-                observers.Add(observer);
-            } 
-        }
-    }
+			while (iterator.HasNext())
+			{
+				var observer = iterator.Next();
+				_ = observer.Update(serviceProvider);
+
+				if (observer.isExpired)
+				{
+					observersTemp.Remove(observer);
+				}
+			}
+			observers.Clear();
+			iterator = observersTemp.CreateIterator();
+
+			while (iterator.HasNext())
+			{
+				observers.Add(iterator.Next());
+			}
+		}
+	}
 }
