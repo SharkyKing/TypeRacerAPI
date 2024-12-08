@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TypeRacerAPI.BaseClasses;
 using TypeRacerAPI.Data;
+using TypeRacerAPI.DesignPatterns.Mediator;
 using TypeRacerAPI.DesignPatterns.Observer.Interface;
 using TypeRacerAPI.DesignPatterns.TemplateMethod;
 using TypeRacerAPI.Hubs;
@@ -15,8 +16,13 @@ namespace TypeRacerAPI.DesignPatterns.Observer
         public int gameId;
 
         public bool isExpired { get; set; }
+		private readonly IMediator _mediator;
+		public GameObserver(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        public void SetGameId(int id)
+		public void SetGameId(int id)
         {
             gameId = id;
         }
@@ -60,8 +66,9 @@ namespace TypeRacerAPI.DesignPatterns.Observer
 		{
 			try
 			{
-				var gameUpdate = new GameObserverUpdate();
-				await gameUpdate.UpdateAsync(serviceProvider, gameId);
+				await _mediator.NotifyAsync(this, "Update");
+				//var gameUpdate = new GameObserverUpdate();
+				//await gameUpdate.UpdateAsync(serviceProvider, gameId);
 			}
 			catch (Exception ex)
 			{

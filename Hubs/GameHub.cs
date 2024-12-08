@@ -13,6 +13,7 @@ using static TypeRacerAPI.EnumClass;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using static TypeRacerAPI.Services.UserInputService;
+using TypeRacerAPI.DesignPatterns.Mediator;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -24,14 +25,16 @@ namespace TypeRacerAPI.Hubs
         private readonly GameService _gameService;
         private readonly ObserverController _observerController;
         private readonly IServiceProvider _serviceProvider;
+		private readonly IMediator _mediator;
 
-        public GameHub(
+		public GameHub(
             AppDbContext context,
             IHubContext<GameHub> hubContext,
             GameTimerService gameTimerService,
             GameService gameService,
             ObserverController observerController,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+			IMediator mediator)
         {
             _context = context;
             _hubContext = hubContext;
@@ -39,9 +42,15 @@ namespace TypeRacerAPI.Hubs
             _gameService = gameService;
             _observerController = observerController;
             _serviceProvider = serviceProvider;
-        }
+			_mediator = mediator;
+		}
 
-        public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel, string connectionGUID)
+		public async Task NotifyPlayers()
+		{
+			await _mediator.NotifyAsync(this, "NotifyPlayers");
+		}
+
+		public async Task CreateGame(string nickName, int activeGameType, int activeGameLevel, string connectionGUID)
         {
             IGameFacade gameCreateFacade = new GameCreateFacade(_context, _hubContext, _observerController, _gameService);
 
@@ -51,7 +60,7 @@ namespace TypeRacerAPI.Hubs
             {
                 await AddMeToGroup(game.Id.ToString());
 
-                GameObserver gameObserver = new GameObserver();
+                GameObserver gameObserver = new GameObserver(_mediator);
                 gameObserver.SetGameId(game.Id);
 
                 _observerController.Attach(gameObserver);
