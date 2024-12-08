@@ -12,6 +12,7 @@ using TypeRacerAPI.Hubs;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Decorator;
 using TypeRacerAPI.DesignPatterns.Command;
+using TypeRacerAPI.DesignPatterns.Iterator;
 
 namespace TypeRacerAPI.Controllers
 {
@@ -88,7 +89,7 @@ namespace TypeRacerAPI.Controllers
 		public ActionResult<IEnumerable<string>> GetWordStyles()
 		{
 			var decoratedWords = new List<string>();
-			List<WordsStyleClass> wordsStyleClasses = new List<WordsStyleClass>();
+            IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
 			var database = new DatabaseReceiver();
 			try
 			{
