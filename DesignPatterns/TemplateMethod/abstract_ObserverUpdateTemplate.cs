@@ -23,7 +23,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
                 if (IsEntityExpired(entity))
                 {
                     HandleEntityExpired(entity);
-                }
+				}
                 else
                 {
                     await UpdateEntityAsync(hubContext, entity);

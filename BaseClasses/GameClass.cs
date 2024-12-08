@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TypeRacerAPI.DesignPatterns.State;
 
 namespace TypeRacerAPI.BaseClasses
 {
@@ -17,5 +18,18 @@ namespace TypeRacerAPI.BaseClasses
         public virtual GameLevelClass GameLevel { get; set; }
         [JsonIgnore]
         public virtual GameTypeClass GameType { get; set; }
-    }
+
+
+		public IGameState State { get; set; } = new ActiveState();
+
+		public void SetState(IGameState state)
+		{
+			State = state;
+		}
+
+		public void HandleState()
+		{
+			State.Handle(this);
+		}
+	}
 }
