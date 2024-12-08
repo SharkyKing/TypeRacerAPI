@@ -55,10 +55,9 @@ public class GameTimerService
 
 				await _observerController.Notify(_serviceProvider);
 				game.SetState(new TimerStartedState());
-				game.HandleState();
+				game.HandleState(_serviceProvider);
+
 				_ = StartGameTimer(game.Id, _serviceProvider);
-				game.SetState(new TimerEndedState());
-				game.HandleState();
 			}
         }
     }
@@ -89,12 +88,16 @@ public class GameTimerService
 
                 if (game.IsOver)
                 {
+                    game.SetState(new TimerEndedState());
+                    game.HandleState(_serviceProvider);
                     return;
                 }
 
                 time--;
             }
 
+            game.SetState(new TimerEndedState());
+            game.HandleState(_serviceProvider);
             PlayerClass player = new PlayerClass();
             await _hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
         }

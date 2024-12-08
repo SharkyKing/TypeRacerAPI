@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using TypeRacerAPI.DesignPatterns.State;
 
 namespace TypeRacerAPI.BaseClasses
@@ -19,17 +20,17 @@ namespace TypeRacerAPI.BaseClasses
         [JsonIgnore]
         public virtual GameTypeClass GameType { get; set; }
 
-
-		public IGameState State { get; set; } = new ActiveState();
+        [NotMapped]
+        public IGameState State { get; set; } = new ActiveState();
 
 		public void SetState(IGameState state)
 		{
 			State = state;
 		}
 
-		public void HandleState()
+		public void HandleState(IServiceProvider serviceProvider)
 		{
-			State.Handle(this);
+			State.Handle(this, serviceProvider);
 		}
 	}
 }

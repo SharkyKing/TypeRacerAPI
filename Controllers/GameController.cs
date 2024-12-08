@@ -22,15 +22,18 @@ namespace TypeRacerAPI.Controllers
         private readonly GameService _gameService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly AppDbContext _context;
+        private readonly IServiceProvider _serviceProvider;
 
         public GameController(
             GameService gameService,
             IHubContext<GameHub> hubContext,
-            AppDbContext context)
+            AppDbContext context,
+            IServiceProvider serviceProvider)
         {
             _gameService = gameService;
             _hubContext = hubContext;
             _context = context;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpGet("{id}")]
@@ -141,6 +144,19 @@ namespace TypeRacerAPI.Controllers
         {
             var playerPowers = await _gameService.GetPlayerPowers(id);
             return Ok(playerPowers);
+        }
+
+        [HttpGet("lastMessage/{id}")]
+        public async Task<ActionResult<string>> GetLastMessage(int id)
+        {
+            var lastMessage = GameService.GetInstance(_serviceProvider).GetLastSavedMessage(id)?.Message;
+
+            if (lastMessage == null)
+            {
+                return Ok("");
+            }
+
+            return Ok(lastMessage); 
         }
     }
 }

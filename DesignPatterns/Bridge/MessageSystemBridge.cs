@@ -9,7 +9,7 @@ using static TypeRacerAPI.EnumClass;
 
 namespace TypeRacerAPI.DesignPatterns.Bridge
 {
-    public class MessageSystemBridge
+    public class MessageSystemBridge : IMessageSystemBridge
     {
         LogController logController;
         IServiceProvider _serviceProvider;

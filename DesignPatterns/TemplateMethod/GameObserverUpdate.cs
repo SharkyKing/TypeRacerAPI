@@ -19,7 +19,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
 				.SingleOrDefaultAsync(g => g.Id == id);
 		}
 
-		protected override bool IsEntityExpired(object entity)
+		protected override bool IsEntityExpired(object entity, IServiceProvider serviceProvider)
 		{
 			var game = entity as GameClass;
 
@@ -30,7 +30,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
 			{
 				game.SetState(new ActiveState());
 			}
-			game.HandleState();
+			game.HandleState(serviceProvider);
 			return game?.IsOver ?? false;
 		}
 

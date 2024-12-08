@@ -4,6 +4,6 @@ namespace TypeRacerAPI.DesignPatterns.State
 {
     public interface IGameState
     {
-        void Handle(GameClass game);
+        void Handle(GameClass game, IServiceProvider serviceProvider);
     }
 }

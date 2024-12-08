@@ -6,6 +6,7 @@ using TypeRacerAPI.Controllers.ControllerHelperClasses;
 using TypeRacerAPI.Data;
 using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
+using TypeRacerAPI.DesignPatterns.Memento;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.Hubs;
 using TypeRacerAPI.Services;
@@ -17,6 +18,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         #region PROPERTIES
         private readonly IServiceProvider _serviceProvider;
         private AppDbContext _context;
+        private MessageMementoController _messageMementoController;
         #endregion
         #region INSTANCE CONTROL
         private static GameService? _instance;
@@ -31,6 +33,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         #endregion
         private GameService(IServiceProvider serviceProvider)
         {
+            _messageMementoController = new MessageMementoController();
             _serviceProvider = serviceProvider;
 
             using (var scope = _serviceProvider.CreateScope())
@@ -143,6 +146,16 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
             player.GameId = null;
             player.IsConnected = false;
             await context.SaveChangesAsync();
+        }
+
+        public void SaveMessage(int id, string message)
+        {
+            _messageMementoController.SaveValue(id, message);  
+        }
+
+        public MessageMemento GetLastSavedMessage(int id)
+        {
+            return _messageMementoController.GetLastValue(id);  
         }
         #endregion
     }

@@ -20,7 +20,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
                     return;
                 }
 
-                if (IsEntityExpired(entity))
+                if (IsEntityExpired(entity, serviceProvider))
                 {
                     HandleEntityExpired(entity);
 				}
@@ -32,7 +32,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
         }
 
         protected abstract Task<object?> GetEntityAsync(AppDbContext appDbContext, int id);
-        protected abstract bool IsEntityExpired(object entity);
+        protected abstract bool IsEntityExpired(object entity, IServiceProvider serviceProvider);
         protected abstract void HandleEntityExpired(object entity);
         protected abstract Task UpdateEntityAsync(IHubContext<Hubs.GameHub> hubContext, object entity);
     }

@@ -12,6 +12,8 @@ using TypeRacerAPI.Services;
 using TypeRacerAPI.DesignPatterns.Observer;
 using TypeRacerAPI.DesignPatterns.Singleton.GameService;
 using Microsoft.AspNetCore.SignalR;
+using System.Reflection;
+using TypeRacerAPI.DesignPatterns.Mediator;
 
 public class Startup
 {
@@ -61,7 +63,7 @@ public class Startup
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<GameTimerService>();
-
+        
         services.AddSingleton<ObserverController>(provider =>
         {
             var serviceProvider = provider;  
@@ -73,6 +75,8 @@ public class Startup
             var serviceProvider = provider;
             return GameService.GetInstance(serviceProvider);
         });
+
+        services.AddSingleton<IMediator, GameMediator>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

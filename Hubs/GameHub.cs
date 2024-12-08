@@ -14,6 +14,7 @@ using TypeRacerAPI.DesignPatterns.Bridge;
 using TypeRacerAPI.DesignPatterns.Bridge.LogBridges;
 using static TypeRacerAPI.Services.UserInputService;
 using TypeRacerAPI.DesignPatterns.Mediator;
+using TypeRacerAPI.DesignPatterns.Proxy;
 
 namespace TypeRacerAPI.Hubs
 {
@@ -135,8 +136,10 @@ namespace TypeRacerAPI.Hubs
         }
         public async Task SendMessage(int gameId, int playerId, string inputValue)
         {
-            MessageSystemBridge messageSystemBridge = new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, playerId);
+            var messageSystemBridge = new MessageSystemBridgeProxy(new MessageSystemBridge(new LogGame(), _serviceProvider, gameId, playerId));
             await messageSystemBridge.SendMessageToGame(inputValue);
+
+            GameService.GetInstance(_serviceProvider).SaveMessage(playerId, inputValue);
         }
     }
 }
