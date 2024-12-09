@@ -6,7 +6,7 @@ namespace TypeRacerAPI.DesignPatterns.Bridge.LogBridges
 {
     public class LogError : ILogService
     {
-        public async ValueTask Log(string message, int? gameId, int? playerId,  IServiceProvider serviceProvider)
+        public async ValueTask Log(string message, int? gameId, int? playerId, IServiceScopeFactory serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {

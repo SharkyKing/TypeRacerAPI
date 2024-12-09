@@ -28,7 +28,7 @@ namespace TypeRacerAPI.BaseClasses
 			State = state;
 		}
 
-		public void HandleState(IServiceProvider serviceProvider)
+		public void HandleState(IServiceScopeFactory serviceProvider)
 		{
 			State.Handle(this, serviceProvider);
 		}

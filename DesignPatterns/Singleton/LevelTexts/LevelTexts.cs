@@ -33,11 +33,11 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 			return _instance;
 		}
 
-		public List<WordsClass> cnv(IterableCollection<WordsClass> iterableCollection)
+		public List<WordsClass> cnv(CustomIterableCollection<WordsClass> iterableCollection)
 		{
 			List<WordsClass> wordsList = new List<WordsClass>();
 
-			IIterator<WordsClass> iterator = iterableCollection.CreateIterator();
+            ICustomIterator<WordsClass> iterator = iterableCollection.CreateIterator();
 			while (iterator.HasNext())
 			{
 				wordsList.Add(iterator.Next());
@@ -89,7 +89,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 			var texts = ReadJsonFile(filePath);
 			if (texts == null) throw new InvalidOperationException("Failed to load texts.");
 
-			IterableCollection<WordsClass> wordsBaseEntries = new IterableCollection<WordsClass>();
+			CustomIterableCollection<WordsClass> wordsBaseEntries = new CustomIterableCollection<WordsClass>();
 			List<WordsClass> words = new List<WordsClass>();
 
 			foreach (var text in texts.Begginner)
@@ -107,7 +107,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.LevelTexts
 				wordsBaseEntries.Add(new WordsClass { GameLevelId = 3, Text = text });
 			}
 
-			IIterator<WordsClass> iterator = wordsBaseEntries.CreateIterator();
+            ICustomIterator<WordsClass> iterator = wordsBaseEntries.CreateIterator();
 			int id = 1;
 
 			while (iterator.HasNext())

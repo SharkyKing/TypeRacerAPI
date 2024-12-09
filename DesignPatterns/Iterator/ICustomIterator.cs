@@ -1,10 +1,8 @@
 ﻿namespace TypeRacerAPI.DesignPatterns.Iterator
 {
-	public interface IIterator<T>
-	{
+    public interface ICustomIterator<T>
+    {
         bool HasNext();
         T Next();
-        void Reset();
     }
-
 }

@@ -14,9 +14,9 @@ namespace TypeRacerAPI.BaseClasses
 		[JsonIgnore]
 		public virtual ICollection<PlayerClass> Players { get; set; }
 
-		public IterableCollection<WordsStyleClass> Filler(DataTable table)
+		public CustomIterableCollection<WordsStyleClass> Filler(DataTable table)
 		{
-			IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
+            CustomIterableCollection<WordsStyleClass> wordsStyleClasses = new CustomIterableCollection<WordsStyleClass>();
 
 			foreach (DataRow row in table.Rows)
 			{

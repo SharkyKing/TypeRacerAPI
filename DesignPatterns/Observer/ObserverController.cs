@@ -5,6 +5,7 @@ using TypeRacerAPI.DesignPatterns.Observer.Interface;
 using TypeRacerAPI.Hubs;
 using System.Collections.Generic;
 using TypeRacerAPI.DesignPatterns.Iterator;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace TypeRacerAPI.DesignPatterns.Observer
 {
@@ -12,12 +13,12 @@ namespace TypeRacerAPI.DesignPatterns.Observer
 	{
 		private static ObserverController _instance;
 		private static readonly object _lock = new object();
-		private IServiceProvider _serviceProvider;
-		private IterableCollection<IObserver> observers = new IterableCollection<IObserver>();
+		private IServiceScopeFactory _serviceProvider;
+		private CustomIterableCollection<IObserver> observers = new CustomIterableCollection<IObserver>();
 
 		private ObserverController() { }
 
-		public static ObserverController GetInstance(IServiceProvider serviceProvider)
+		public static ObserverController GetInstance(IServiceScopeFactory serviceProvider)
 		{
 			if (_instance == null)
 			{
@@ -40,10 +41,10 @@ namespace TypeRacerAPI.DesignPatterns.Observer
 
 		public void Attach(IObserver observer) => observers.Add(observer);
 
-		public async ValueTask Notify(IServiceProvider serviceProvider)
+		public async ValueTask Notify(IServiceScopeFactory serviceProvider)
 		{
-			IterableCollection<IObserver> observersTemp = new IterableCollection<IObserver>();
-			IIterator<IObserver> iterator = observers.CreateIterator();
+			CustomIterableCollection<IObserver> observersTemp = new CustomIterableCollection<IObserver>();
+            ICustomIterator<IObserver> iterator = observers.CreateIterator();
 
 			while (iterator.HasNext())
 			{

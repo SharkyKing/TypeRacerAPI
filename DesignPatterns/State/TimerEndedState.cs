@@ -7,7 +7,7 @@ namespace TypeRacerAPI.DesignPatterns.State
 {
     public class TimerEndedState : IGameState
     {
-        public void Handle(GameClass game, IServiceProvider serviceProvider)
+        public void Handle(GameClass game, IServiceScopeFactory serviceProvider)
         {
             // Logic for handling over state
             // Kreipimasis i db StartTime = 0

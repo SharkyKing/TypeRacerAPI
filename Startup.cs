@@ -63,17 +63,17 @@ public class Startup
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<GameTimerService>();
-        
+
         services.AddSingleton<ObserverController>(provider =>
         {
-            var serviceProvider = provider;  
-            return ObserverController.GetInstance(serviceProvider);
+            var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+            return ObserverController.GetInstance(scopeFactory);
         });
 
         services.AddSingleton<GameService>(provider =>
         {
-            var serviceProvider = provider;
-            return GameService.GetInstance(serviceProvider);
+            var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+            return GameService.GetInstance(scopeFactory);
         });
 
         services.AddSingleton<IMediator, GameMediator>();

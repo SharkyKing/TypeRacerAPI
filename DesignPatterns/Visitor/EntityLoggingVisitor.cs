@@ -8,7 +8,7 @@ namespace TypeRacerAPI.DesignPatterns.Visitor
     public class EntityLoggingVisitor : IEntityVisitor
     {
         LogController logController;
-        public EntityLoggingVisitor(ILogService logService, IServiceProvider serviceProvider)
+        public EntityLoggingVisitor(ILogService logService, IServiceScopeFactory serviceProvider)
         {
             logController = new LogController(logService, serviceProvider);
         }

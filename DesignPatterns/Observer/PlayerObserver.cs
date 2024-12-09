@@ -23,7 +23,7 @@ namespace TypeRacerAPI.DesignPatterns.Observer
             playerId = id;
         }
 
-        public async ValueTask Update(IServiceProvider serviceProvider)
+        public async ValueTask Update(IServiceScopeFactory serviceProvider)
 		{
 			try
 			{

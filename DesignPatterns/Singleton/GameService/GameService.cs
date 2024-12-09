@@ -16,7 +16,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
     public class GameService
     {
         #region PROPERTIES
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceProvider;
         private AppDbContext _context;
         private MessageMementoController _messageMementoController;
         #endregion
@@ -31,7 +31,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
         public List<WordsStyleClass> WordStyles { get; private set; }
         public List<PlayerGameResultTypeClass> PlayerGameResults { get; private set; }
         #endregion
-        private GameService(IServiceProvider serviceProvider)
+        private GameService(IServiceScopeFactory serviceProvider)
         {
             _messageMementoController = new MessageMementoController();
             _serviceProvider = serviceProvider;
@@ -46,7 +46,7 @@ namespace TypeRacerAPI.DesignPatterns.Singleton.GameService
                 PlayerGameResults = context.PlayerGameResultType.ToList();
             }
         }
-        public static GameService GetInstance(IServiceProvider serviceProvider)
+        public static GameService GetInstance(IServiceScopeFactory serviceProvider)
         {
             if (_instance == null)
             {

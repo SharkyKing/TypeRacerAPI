@@ -25,7 +25,7 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
             visitor.Visit(this);
         }
 
-        public async ValueTask Attack(int? playerId, int? victimId, IServiceProvider serviceProvider)
+        public async ValueTask Attack(int? playerId, int? victimId, IServiceScopeFactory serviceProvider)
         {
             this.playerId = playerId;
             this.victimId = victimId;

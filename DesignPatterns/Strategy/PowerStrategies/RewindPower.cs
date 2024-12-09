@@ -16,7 +16,7 @@ namespace TypeRacerAPI.DesignPatterns.Strategy.PowerStrategies
         public string powerType { get; set; } = "R";
         public int? playerId { get; set; } = 0;
         public int? victimId { get; set; } = 0;
-        public async ValueTask Attack(int? playerId, int? victimId, IServiceProvider serviceProvider)
+        public async ValueTask Attack(int? playerId, int? victimId, IServiceScopeFactory serviceProvider)
         {
             this.playerId = playerId;
             this.victimId = victimId;

@@ -30,7 +30,7 @@ public class GameTimerService
         _gameService = gameService;
     }
     #region GAME TIME CONTROL
-    public async Task StartInitiatingGame(GameClass game, IServiceProvider _serviceProvider)
+    public async Task StartInitiatingGame(GameClass game, IServiceScopeFactory _serviceProvider)
     {
         int countDown = ConstantService.StartGameCountdownSeconds;
 
@@ -62,7 +62,7 @@ public class GameTimerService
 			}
         }
     }
-    public async Task StartGameTimer(int gameId, IServiceProvider _serviceProvider)
+    public async Task StartGameTimer(int gameId, IServiceScopeFactory _serviceProvider)
     {
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -106,7 +106,7 @@ public class GameTimerService
 	#endregion
 
 	#region PLAYER TIME CONTROL
-	public async Task PowerCoolDownTimer(int? playerId, string connectionId, IServiceProvider _serviceProvider)
+	public async Task PowerCoolDownTimer(int? playerId, string connectionId, IServiceScopeFactory _serviceProvider)
 	{
 		using (var scope = _serviceProvider.CreateScope())
 		{
@@ -117,7 +117,7 @@ public class GameTimerService
 				.Where(ppu => ppu.PlayerId == playerId && !ppu.IsUsed && !ppu.IsOnCooldown)
 				.ToList();
 
-			var cooldownCollection = new IterableCollection<KeyValuePair<PlayerPowerUseClass, int>>();
+			var cooldownCollection = new CustomIterableCollection<KeyValuePair<PlayerPowerUseClass, int>>();
 
 			foreach (var usePower in playerPowers)
 			{

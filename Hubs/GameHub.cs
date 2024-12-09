@@ -25,7 +25,7 @@ namespace TypeRacerAPI.Hubs
         private readonly GameTimerService _gameTimerService;
         private readonly GameService _gameService;
         private readonly ObserverController _observerController;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceProvider;
 		private readonly IMediator _mediator;
 
 		public GameHub(
@@ -34,7 +34,7 @@ namespace TypeRacerAPI.Hubs
             GameTimerService gameTimerService,
             GameService gameService,
             ObserverController observerController,
-            IServiceProvider serviceProvider,
+            IServiceScopeFactory serviceProvider,
 			IMediator mediator)
         {
             _context = context;

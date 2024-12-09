@@ -17,7 +17,7 @@ namespace TypeRacerAPI.Services
         {
             public bool powerUsed = false;
         }
-        public static async ValueTask<UserInputServiceCheckResult> CheckUserInput(int? playerId, int gameId, string userInput, IServiceProvider serviceProvider)
+        public static async ValueTask<UserInputServiceCheckResult> CheckUserInput(int? playerId, int gameId, string userInput, IServiceScopeFactory serviceProvider)
         {
             UserInputServiceCheckResult userInputServiceCheckResult = new UserInputServiceCheckResult();
 

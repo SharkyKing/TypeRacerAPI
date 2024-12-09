@@ -15,7 +15,7 @@ namespace TypeRacerAPI.Services
 {
     public class PowerService
     {
-        public async ValueTask<bool> TryAttack(string powerCast, int? playerId, int gameId, IServiceProvider serviceProvider)
+        public async ValueTask<bool> TryAttack(string powerCast, int? playerId, int gameId, IServiceScopeFactory serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -31,23 +31,23 @@ namespace TypeRacerAPI.Services
 
                 int victimPlayerId;
 
-                if (!powerCastExpression.Interpret(playerId, out victimPlayerId, powerCast))
+                if (!powerCastExpression.Interpret(playerId, out victimPlayerId, powerCast.ToLower()))
                 {
                     return false; 
                 }
 
                 PowerController powerController = new PowerController(serviceProvider, playerId, victimPlayerId);
 
-                switch (powerCast[2]) 
+                switch (powerCast.ToLower()[2]) 
                 {
                     case 'f': 
-                        powerController.SetPowerStrategy(new FreezePower());
+                        powerController.SetPowerStrategy(new FreezePower(), new FreezePower());
                         break;
                     case 'r': 
-                        powerController.SetPowerStrategy(new RewindPower());
+                        powerController.SetPowerStrategy(new RewindPower(), new FreezePower());
                         break;
                     case 'i': 
-                        powerController.SetPowerStrategy(new InvisiblePower());
+                        powerController.SetPowerStrategy(new InvisiblePower(), new FreezePower());
                         break;
                     default:
                         return false; 
@@ -58,7 +58,7 @@ namespace TypeRacerAPI.Services
                 try
                 {
 
-                    (powerController.powerStrategy as IEntity).Accept(visitor);
+                    (powerController.powerEntity).Accept(visitor);
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +72,7 @@ namespace TypeRacerAPI.Services
 
         private PowerCastExpression GetPowerCastExpression(string powerCast)
         {
-            switch (powerCast[2]) 
+            switch (powerCast.ToLower()[2]) 
             {
                 case 'f':
                     return new FreezePowerCast();

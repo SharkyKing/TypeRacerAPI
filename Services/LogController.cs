@@ -6,24 +6,24 @@ namespace TypeRacerAPI.Services
 {
     public class LogController
     {
-        IServiceProvider serviceProvider;
+        IServiceScopeFactory serviceProvider;
         ILogService logService;
         int? gameId = null;
         int? playerId = null;
-        public LogController(ILogService logService, IServiceProvider serviceProvider, int? gameId, int? playerId)
+        public LogController(ILogService logService, IServiceScopeFactory serviceProvider, int? gameId, int? playerId)
         {
             this.logService = logService;
             this.serviceProvider = serviceProvider;
             this.gameId = gameId;
             this.playerId = playerId;
         }
-        public LogController(ILogService logService, IServiceProvider serviceProvider, int gameId)
+        public LogController(ILogService logService, IServiceScopeFactory serviceProvider, int gameId)
         {
             this.logService = logService;
             this.serviceProvider = serviceProvider;
             this.gameId = gameId;
         }
-        public LogController(ILogService logService, IServiceProvider serviceProvider)
+        public LogController(ILogService logService, IServiceScopeFactory serviceProvider)
         {
             this.logService = logService;
             this.serviceProvider = serviceProvider;

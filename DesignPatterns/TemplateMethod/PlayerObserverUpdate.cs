@@ -16,7 +16,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
-        protected override bool IsEntityExpired(object entity, IServiceProvider serviceProvider)
+        protected override bool IsEntityExpired(object entity, IServiceScopeFactory serviceProvider)
         {
             var player = entity as PlayerClass;
             return player?.Game.IsOver ?? false;

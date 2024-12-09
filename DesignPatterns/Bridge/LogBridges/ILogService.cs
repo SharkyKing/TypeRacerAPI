@@ -2,6 +2,6 @@
 {
     public interface ILogService
     {
-        ValueTask Log(string message, int? gameId, int? playerId, IServiceProvider serviceProvider);
+        ValueTask Log(string message, int? gameId, int? playerId, IServiceScopeFactory serviceProvider);
     }
 }

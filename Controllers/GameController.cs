@@ -23,13 +23,13 @@ namespace TypeRacerAPI.Controllers
         private readonly GameService _gameService;
         private readonly IHubContext<GameHub> _hubContext;
         private readonly AppDbContext _context;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceProvider;
 
         public GameController(
             GameService gameService,
             IHubContext<GameHub> hubContext,
             AppDbContext context,
-            IServiceProvider serviceProvider)
+            IServiceScopeFactory serviceProvider)
         {
             _gameService = gameService;
             _hubContext = hubContext;
@@ -89,7 +89,7 @@ namespace TypeRacerAPI.Controllers
 		public ActionResult<IEnumerable<string>> GetWordStyles()
 		{
 			var decoratedWords = new List<string>();
-			IterableCollection<WordsStyleClass> wordsStyleClasses = new IterableCollection<WordsStyleClass>();
+			CustomIterableCollection<WordsStyleClass> wordsStyleClasses = new CustomIterableCollection<WordsStyleClass>();
 			var database = new DatabaseReceiver();
 			try
 			{

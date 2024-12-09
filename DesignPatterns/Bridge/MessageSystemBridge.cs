@@ -12,10 +12,10 @@ namespace TypeRacerAPI.DesignPatterns.Bridge
     public class MessageSystemBridge : IMessageSystemBridge
     {
         LogController logController;
-        IServiceProvider _serviceProvider;
+        IServiceScopeFactory _serviceProvider;
         int? gameId;
         int? playerId;
-        public MessageSystemBridge(ILogService logService,IServiceProvider serviceProvider, int? gameId, int? playerId)
+        public MessageSystemBridge(ILogService logService, IServiceScopeFactory serviceProvider, int? gameId, int? playerId)
         {
             logController = new LogController(logService, serviceProvider, gameId, playerId);
             _serviceProvider = serviceProvider;

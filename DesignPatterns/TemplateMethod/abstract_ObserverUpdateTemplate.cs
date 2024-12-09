@@ -5,7 +5,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
 {
     public abstract class ObserverUpdateTemplate
     {
-        public async Task UpdateAsync(IServiceProvider serviceProvider, int id)
+        public async Task UpdateAsync(IServiceScopeFactory serviceProvider, int id)
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -32,7 +32,7 @@ namespace TypeRacerAPI.DesignPatterns.TemplateMethod
         }
 
         protected abstract Task<object?> GetEntityAsync(AppDbContext appDbContext, int id);
-        protected abstract bool IsEntityExpired(object entity, IServiceProvider serviceProvider);
+        protected abstract bool IsEntityExpired(object entity, IServiceScopeFactory serviceProvider);
         protected abstract void HandleEntityExpired(object entity);
         protected abstract Task UpdateEntityAsync(IHubContext<Hubs.GameHub> hubContext, object entity);
     }

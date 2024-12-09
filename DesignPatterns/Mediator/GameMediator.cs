@@ -10,9 +10,9 @@ namespace TypeRacerAPI.DesignPatterns.Mediator
 {
     public class GameMediator : IMediator
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceProvider;
 
-        public GameMediator(IServiceProvider serviceProvider)
+        public GameMediator(IServiceScopeFactory serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }

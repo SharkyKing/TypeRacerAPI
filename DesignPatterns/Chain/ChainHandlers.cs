@@ -17,24 +17,28 @@ namespace TypeRacerAPI.DesignPatterns.Chain
             _nextHandler = handler;
         }
 
-        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceProvider serviceProvider, IHubContext<GameHub> hubContext)
+        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceScopeFactory serviceScopeFactory, IHubContext<GameHub> hubContext)
         {
-            var _appDbContext = serviceProvider.GetRequiredService<AppDbContext>();
-
-            List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
-
-            bool allFinished = players.All(p => p.Finished);
-
-            if (allFinished)
+            using (var scope = serviceScopeFactory.CreateScope())  // Create a new scope
             {
-                if (_nextHandler != null)
-                    await _nextHandler.HandleEndGameAsync(game, player, serviceProvider, hubContext);
-            }
-            else
-            {
-                Console.WriteLine("Not all players have finished.");
+                var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>(); // Get the AppDbContext
+
+                List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
+
+                bool allFinished = players.All(p => p.Finished);
+
+                if (allFinished)
+                {
+                    if (_nextHandler != null)
+                        await _nextHandler.HandleEndGameAsync(game, player, serviceScopeFactory, hubContext); // Proceed with the next handler
+                }
+                else
+                {
+                    Console.WriteLine("Not all players have finished.");
+                }
             }
         }
+
     }
 
     public class DetermineWinnerHandler : IEndGameHandler
@@ -46,23 +50,27 @@ namespace TypeRacerAPI.DesignPatterns.Chain
             _nextHandler = handler;
         }
 
-        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceProvider serviceProvider, IHubContext<GameHub> hubContext)
+        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceScopeFactory serviceScopeFactory, IHubContext<GameHub> hubContext)
         {
-            var _appDbContext = serviceProvider.GetRequiredService<AppDbContext>();
-
-            List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
-            PlayerClass winner = players.OrderBy(p => p.MistakeCount).FirstOrDefault(p => p.Finished);
-
-            if (winner != null)
+            using (var scope = serviceScopeFactory.CreateScope())  // Create a new scope
             {
-                if (_nextHandler != null)
-                    await _nextHandler.HandleEndGameAsync(game, winner, serviceProvider, hubContext);
-            }
-            else
-            {
-                Console.WriteLine("No winner determined.");
+                var _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>(); // Get the AppDbContext
+
+                List<PlayerClass> players = await _appDbContext.Players.Where(p => p.GameId == game.Id).ToListAsync();
+                PlayerClass winner = players.OrderBy(p => p.MistakeCount).FirstOrDefault(p => p.Finished);
+
+                if (winner != null)
+                {
+                    if (_nextHandler != null)
+                        await _nextHandler.HandleEndGameAsync(game, winner, serviceScopeFactory, hubContext); // Proceed with the next handler
+                }
+                else
+                {
+                    Console.WriteLine("No winner determined.");
+                }
             }
         }
+
     }
 
     public class SendGameOverMessageHandler : IEndGameHandler
@@ -74,7 +82,7 @@ namespace TypeRacerAPI.DesignPatterns.Chain
             _nextHandler = handler;
         }
 
-        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceProvider serviceProvider, IHubContext<GameHub> hubContext)
+        public async Task HandleEndGameAsync(GameClass game, PlayerClass player, IServiceScopeFactory serviceProvider, IHubContext<GameHub> hubContext)
         {
             await hubContext.Clients.Group(game.Id.ToString()).SendAsync(ConstantService.HubCalls[HubCall.Done], new { playerWon = player });
         }

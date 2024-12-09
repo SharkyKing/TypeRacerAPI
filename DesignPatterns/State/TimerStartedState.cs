@@ -7,7 +7,7 @@ namespace TypeRacerAPI.DesignPatterns.State
 {
     public class TimerStartedState : IGameState
     {
-        public void Handle(GameClass game, IServiceProvider serviceProvider)
+        public void Handle(GameClass game, IServiceScopeFactory serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
