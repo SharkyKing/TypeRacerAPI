@@ -72,6 +72,8 @@ namespace TypeRacerAPI.Services
 
         private PowerCastExpression GetPowerCastExpression(string powerCast)
         {
+            if (powerCast.Length <= 3) return null;
+
             switch (powerCast.ToLower()[2]) 
             {
                 case 'f':
